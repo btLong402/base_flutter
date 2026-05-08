@@ -62,11 +62,8 @@ class AdvancedGridView extends BoxScrollView {
     if (animation == null) {
       builder = _itemBuilder;
     } else {
-      builder = (context, index) => animation.wrap(
-        context,
-        index,
-        _itemBuilder(context, index),
-      );
+      builder = (context, index) =>
+          animation.wrap(context, index, _itemBuilder(context, index));
     }
 
     // PERFORMANCE: Use optimized delegate with proper callbacks

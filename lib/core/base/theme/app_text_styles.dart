@@ -9,7 +9,7 @@ class AppTextStyles {
 
   // Base text style
   static TextStyle get _baseTextStyle => TextStyle(
-    fontFamily: GoogleFonts.poppins().fontFamily, 
+    fontFamily: GoogleFonts.poppins().fontFamily,
     fontWeight: FontWeight.normal,
   );
 

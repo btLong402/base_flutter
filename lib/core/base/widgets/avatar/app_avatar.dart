@@ -37,18 +37,11 @@ class AppAvatar extends StatelessWidget {
               height: size,
               borderRadius: BorderRadius.circular(size / 2),
             )
-          : Icon(
-              Icons.person,
-              color: Colors.white,
-              size: size * 0.6,
-            ),
+          : Icon(Icons.person, color: Colors.white, size: size * 0.6),
     );
 
     if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: avatar,
-      );
+      return GestureDetector(onTap: onTap, child: avatar);
     }
 
     return avatar;

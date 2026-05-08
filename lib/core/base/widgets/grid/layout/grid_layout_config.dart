@@ -1,4 +1,5 @@
-import 'package:base_flutter/core/base/widgets/grid/grid.dart' show AdvancedGridView;
+import 'package:base_flutter/core/base/widgets/grid/grid.dart'
+    show AdvancedGridView;
 import 'package:base_flutter/core/base/widgets/grid/pinterest.dart'
     show AdvancedGridView;
 import 'package:base_flutter/core/base/widgets/grid/widgets/advanced_grid_view.dart'

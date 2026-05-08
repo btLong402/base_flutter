@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
 /// A secure storage wrapper that provides unified logging and error handling.
-/// 
+///
 /// This class wraps [FlutterSecureStorage] to ensure that all sensitive data
 /// operations are properly logged and exceptions are handled gracefully.
 @lazySingleton
@@ -29,7 +29,7 @@ class SecureStorage {
   }
 
   /// Reads a value from secure storage with the given [key].
-  /// 
+  ///
   /// Returns null if the key does not exist.
   Future<String?> read({required String key}) async {
     try {

@@ -233,10 +233,7 @@ class RenderSliverAdvancedGrid extends RenderSliverMultiBoxAdaptor {
       final size = currentChild.size;
 
       // Record placement in session cache for future reference
-      final placement = session.recordChildLayout(
-        index,
-        size,
-      );
+      final placement = session.recordChildLayout(index, size);
 
       childParentData
         ..layoutOffset = placement.layoutOffset

@@ -2,7 +2,6 @@ import 'package:base_flutter/core/base/base_usecase.dart';
 import 'package:base_flutter/core/base/error/failures.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 abstract class BaseNotifier<S> extends StateNotifier<S> {
   BaseNotifier(super._state);
 
@@ -22,10 +21,7 @@ abstract class BaseNotifier<S> extends StateNotifier<S> {
   }) async {
     onLoading();
     final result = await task;
-    result.fold(
-      (failure) => onError(mapFailureToMessage(failure)),
-      onSuccess,
-    );
+    result.fold((failure) => onError(mapFailureToMessage(failure)), onSuccess);
     return result;
   }
 }

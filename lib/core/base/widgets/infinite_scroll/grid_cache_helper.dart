@@ -5,7 +5,6 @@ import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_v
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
 import 'package:flutter/widgets.dart';
 
-
 /// Helpers for computing cache extents & tile dimensions in grid layouts.
 ///
 /// Extracted from [InfiniteScrollView] state to keep the main widget

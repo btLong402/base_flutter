@@ -8,22 +8,24 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import 'package:base_flutter/core/base/config/environment.dart';
+
 /// Dio client factory
 class DioClient {
   DioClient({
-    required this.baseUrl,
+    required AppEnvironment environment,
     required this.cookieManager,
     required this.tokenStorage,
     required this.userPreferences,
     this.connectTimeout = AppConstants.connectTimeout,
     this.receiveTimeout = AppConstants.receiveTimeout,
     this.sendTimeout = AppConstants.sendTimeout,
-    this.enableLogging = true,
-    this.enableCaching = true,
-  }) {
+  }) : baseUrl = environment.baseUrl,
+       enableLogging = environment.enableLogging,
+       enableCaching = environment.enableCaching {
     _dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: environment.baseUrl,
         connectTimeout: connectTimeout,
         receiveTimeout: receiveTimeout,
         sendTimeout: sendTimeout,

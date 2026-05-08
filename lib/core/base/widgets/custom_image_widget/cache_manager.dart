@@ -2,7 +2,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class CustomImageCacheManager {
   static const String key = 'customImageCacheKey';
-  
+
   static final CacheManager instance = CacheManager(
     Config(
       key,

@@ -69,13 +69,8 @@ class RenderAdvancedGridBox extends RenderBox
       maxWidth - resolvedPadding.horizontal,
     );
 
-    final strategy = createLayoutStrategy(
-      _layout,
-      _textDirection,
-    );
-    final descriptor = strategy.describeBoxLayout(
-      innerWidth,
-    );
+    final strategy = createLayoutStrategy(_layout, _textDirection);
+    final descriptor = strategy.describeBoxLayout(innerWidth);
     final engine = _BoxColumnEngine(
       descriptor: descriptor,
       crossAxisExtent: innerWidth,
@@ -101,15 +96,9 @@ class RenderAdvancedGridBox extends RenderBox
         maxHeight: mainExtent ?? double.infinity,
       );
       child.layout(childConstraints, parentUsesSize: true);
-      final placement = engine.placeChild(
-        index,
-        child.size,
-        span,
-      );
+      final placement = engine.placeChild(index, child.size, span);
 
-      final resolvedAlignment = span.alignment.resolve(
-        _textDirection,
-      );
+      final resolvedAlignment = span.alignment.resolve(_textDirection);
       final alignmentOffset = resolvedAlignment.alongSize(
         Size(
           placement.crossAxisExtent - child.size.width,
@@ -173,10 +162,7 @@ class _BoxColumnEngine {
     required this.descriptor,
     required this.crossAxisExtent,
     required this.textDirection,
-  }) : columnHeights = List<double>.filled(
-         descriptor.columnCount,
-         0,
-       ) {
+  }) : columnHeights = List<double>.filled(descriptor.columnCount, 0) {
     _configure();
   }
 

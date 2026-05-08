@@ -8,7 +8,7 @@ extension LocalizationExtension on BuildContext {
   /// Get current locale
   Locale get currentLocale => Localizations.localeOf(this);
 
-  /// Check if current locale is English  
+  /// Check if current locale is English
   bool get isEnglish => currentLocale.languageCode == 'en';
 
   /// Check if current locale is Vietnamese

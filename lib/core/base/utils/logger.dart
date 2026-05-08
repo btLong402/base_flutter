@@ -3,9 +3,7 @@ import 'package:logger/logger.dart';
 
 class AppLogger {
   static final Logger _logger = Logger(
-    printer: PrettyPrinter(
-      dateTimeFormat: DateTimeFormat.dateAndTime,
-    ),
+    printer: PrettyPrinter(dateTimeFormat: DateTimeFormat.dateAndTime),
   );
 
   static void d(String message, [dynamic error, StackTrace? stackTrace]) {

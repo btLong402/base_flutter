@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:base_flutter/core/base/config/environment.dart';
+import 'package:base_flutter/core/base/theme/theme_provider.dart';
+import 'package:base_flutter/core/router/app_router.dart';
+
+class BaseApp extends ConsumerWidget {
+  const BaseApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final env = EnvironmentConfig.current;
+    final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
+    final lightTheme = ref.watch(lightThemeProvider);
+    final darkTheme = ref.watch(darkThemeProvider);
+
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // Standard design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          title: env.name,
+          debugShowCheckedModeBanner: env.isDevelopment,
+          // Theme Integration
+          themeMode: themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          // Router Integration
+          routerConfig: router,
+        );
+      },
+    );
+  }
+}

@@ -90,6 +90,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/env/
 
 flutter_intl:
   enabled: true
