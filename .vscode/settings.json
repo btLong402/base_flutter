@@ -1,0 +1,12 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "$(capture).g.dart, $(capture).freezed.dart, $(capture).gr.dart, $(capture).config.dart, $(capture).injectable.config.dart"
+  },
+  "files.exclude": {
+    "**/*.g.dart": false,
+    "**/*.freezed.dart": false,
+    "**/*.gr.dart": false
+  }
+}
