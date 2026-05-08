@@ -1,0 +1,105 @@
+name: base_flutter
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.9
+  auto_size_text: ^3.0.0
+  cached_network_image: ^3.4.1
+  characters: ^1.4.0
+  collection: ^1.19.1
+  connectivity_plus: ^7.1.1
+  cookie_jar: ^4.0.9
+  dartz: ^0.10.1
+  device_info_plus: ^12.4.0
+  dio: ^5.9.2
+  dio_cache_interceptor: ^4.0.6
+  dio_cookie_manager: ^3.4.0
+  equatable: ^2.0.8
+  file_picker: ^11.0.2
+  fl_chart: ^1.2.0
+  flutter_cache_manager: ^3.4.1
+  flutter_dotenv: ^6.0.1
+  flutter_hooks: ^0.21.3+1
+  flutter_launcher_icons: ^0.14.4
+  flutter_local_notifications: ^21.0.0
+  flutter_localization: ^0.4.0
+  flutter_native_splash: ^2.4.7
+  flutter_riverpod: ^2.5.1
+  flutter_screenutil: ^5.9.3
+  flutter_secure_storage: ^10.1.0
+  flutter_staggered_animations: ^1.1.1
+  flutter_svg: ^2.2.4
+  flutter_widget_from_html_core: ^0.17.2
+  fluttertoast: ^9.0.0
+  font_awesome_flutter: ^11.0.0
+  fpdart: ^1.2.0
+  freezed_annotation: ^3.1.0
+  gap: ^3.0.1
+  get_it: ^9.2.1
+  go_router: ^17.2.3
+  google_fonts: ^8.1.0
+  hive_ce: ^2.19.3
+  hive_ce_flutter: ^2.3.4
+  hooks_riverpod: ^2.5.1
+  http_cache_hive_store: ^5.1.0
+  image_picker: ^1.2.2
+  injectable: ^2.5.0
+  intl: ^0.20.2
+  json_annotation: ^4.9.0
+  jwt_decoder: ^2.0.1
+  local_auth: ^3.0.1
+  logger: ^2.7.0
+  mobile_scanner: ^7.2.0
+  package_info_plus: ^9.0.1
+  path_provider: ^2.1.5
+  photo_manager: ^3.9.0
+  pretty_dio_logger: ^1.4.0
+  retrofit: ^4.9.2
+  share_plus: ^12.0.2
+  shared_preferences: ^2.5.5
+  shimmer: ^3.0.0
+  socket_io_client: ^3.1.4
+  table_calendar: ^3.2.0
+  timezone: ^0.11.0
+  url_launcher: ^6.3.2
+  uuid: ^4.5.3
+  video_player: ^2.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.15.0
+  flutter_gen_runner: ^5.13.0+1
+  freezed: ^3.2.5
+  hive_ce_generator: ^1.11.1
+  injectable_generator: ^2.12.1
+  intl_utils: ^2.8.14
+  json_serializable: ^6.13.1
+  mocktail: ^1.0.4
+  retrofit_generator: ^10.2.3
+  very_good_analysis: ^10.1.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+flutter_intl:
+  enabled: true
+  class_name: S
+  main_locale: vi
+  arb_dir: lib/core/l10n/arb
+  output_dir: lib/core/l10n/generated
+  
+flutter_gen:
+  output: lib/core/gen/
+  line_length: 80
+  integrations:
+    flutter_svg: true
