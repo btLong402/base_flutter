@@ -17,6 +17,10 @@ class AppConstants {
   static const String cryptoAesKey = 'crypto_aes_key';
   static const String cryptoAesIv = 'crypto_aes_iv';
   static const String cryptoKeyCreatedAt = 'crypto_key_created_at';
+  static const String serverRsaPublicKey = '''
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA75N...[Thay bằng Key thật]...
+-----END PUBLIC KEY-----''';
 
   // Network Extra Keys
   static const String secureExtraKey = 'secure';
@@ -47,11 +51,12 @@ class AppConstants {
 }
 
 /// HTTP Headers
-class HttpHeaders {
-  HttpHeaders._();
+class AppHttpHeaders {
+  AppHttpHeaders._();
   static const String authorization = 'Authorization';
   static const String contentType = 'Content-Type';
   static const String accept = 'Accept';
   static const String acceptLanguage = 'Accept-Language';
   static const String xEncrypted = 'X-Encrypted';
+  static const String xKey = 'X-Key';
 }

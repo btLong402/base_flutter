@@ -2,10 +2,12 @@ import 'package:base_flutter/core/base/constants/app_constants.dart';
 import 'package:base_flutter/core/base/storage/secure_storage.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 
 abstract class CryptoService {
-  Future<String> encrypt(String plainText);
-  Future<String> decrypt(String cipherText);
+  Future<String> encrypt(String plainText, {Key? key, IV? iv});
+  Future<String> decrypt(String cipherText, {Key? key, IV? iv});
+  Future<({String payload, String encryptedKey})> encryptHybrid(String plainText, {String? publicKey});
   Future<void> rotateKey();
 }
 
@@ -55,22 +57,45 @@ class AesCryptoService implements CryptoService {
   }
 
   @override
-  Future<String> encrypt(String plainText) async {
+  Future<String> encrypt(String plainText, {Key? key, IV? iv}) async {
     await _ensureInitialized();
-    final key = _key!;
-    final iv = _iv!;
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    final effectiveKey = key ?? _key!;
+    final effectiveIv = iv ?? _iv!;
+    final encrypter = Encrypter(AES(effectiveKey, mode: AESMode.cbc));
+    final encrypted = encrypter.encrypt(plainText, iv: effectiveIv);
     return encrypted.base64;
   }
 
   @override
-  Future<String> decrypt(String cipherText) async {
+  Future<String> decrypt(String cipherText, {Key? key, IV? iv}) async {
     await _ensureInitialized();
-    final key = _key!;
-    final iv = _iv!;
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-    final decrypted = encrypter.decrypt64(cipherText, iv: iv);
+    final effectiveKey = key ?? _key!;
+    final effectiveIv = iv ?? _iv!;
+    final encrypter = Encrypter(AES(effectiveKey, mode: AESMode.cbc));
+    final decrypted = encrypter.decrypt64(cipherText, iv: effectiveIv);
     return decrypted;
+  }
+
+  @override
+  Future<({String payload, String encryptedKey})> encryptHybrid(String plainText, {String? publicKey}) async {
+    // 1. Generate fresh AES Key and IV for this request
+    final aesKey = Key.fromSecureRandom(32);
+    final aesIv = IV.fromSecureRandom(16);
+
+    // 2. Encrypt body using AES
+    final payload = await encrypt(plainText, key: aesKey, iv: aesIv);
+
+    // 3. Encrypt AES Key + IV using Server's RSA Public Key
+    final keyPackage = '${aesKey.base64}:${aesIv.base64}';
+    
+    final rsaKey = publicKey ?? AppConstants.serverRsaPublicKey;
+    final rsaEncrypter = Encrypter(RSA(publicKey: _parsePublicKey(rsaKey)));
+    final encryptedKey = rsaEncrypter.encrypt(keyPackage).base64;
+
+    return (payload: payload, encryptedKey: encryptedKey);
+  }
+
+  RSAPublicKey _parsePublicKey(String pem) {
+    return RSAKeyParser().parse(pem) as RSAPublicKey;
   }
 }

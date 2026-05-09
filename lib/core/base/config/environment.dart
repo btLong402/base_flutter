@@ -14,6 +14,7 @@ class AppEnvironment {
     required this.webUrl,
     required this.enableLogging,
     required this.enableCaching,
+    required this.rsaPublicKey,
   });
 
   /// Active flavor.
@@ -33,6 +34,9 @@ class AppEnvironment {
 
   /// Flag controlling client-side caching.
   final bool enableCaching;
+
+  /// RSA Public Key for hybrid encryption
+  final String rsaPublicKey;
 
   /// Parsed [Uri] representation of [baseUrl].
   Uri get baseUri => Uri.parse(baseUrl);
@@ -55,6 +59,7 @@ class EnvironmentConfig {
   static const String _cachingKey = 'ENABLE_CACHING';
   static const String _baseUrlKey = 'API_BASE_URL';
   static const String _webUrlKey = 'WEB_BASE_URL';
+  static const String _rsaPublicKeyKey = 'RSA_PUBLIC_KEY';
   static const String _defaultWebUrl = 'https://app-base-flutter.com';
   static const String _filePrefix = 'assets/env/.env';
   static const String _defaultFile = 'assets/env/.env.development';
@@ -97,6 +102,7 @@ class EnvironmentConfig {
     final webUrl = dotenv.maybeGet(_webUrlKey) ?? _defaultWebUrl;
     final enableLogging = _parseBool(dotenv.maybeGet(_loggingKey)) ?? true;
     final enableCaching = _parseBool(dotenv.maybeGet(_cachingKey)) ?? true;
+    final rsaPublicKey = dotenv.maybeGet(_rsaPublicKeyKey) ?? AppConstants.serverRsaPublicKey;
     final environmentName = dotenv.maybeGet(_envKey) ?? resolvedFlavor.name;
 
     _instance = EnvironmentConfig._(
@@ -107,6 +113,7 @@ class EnvironmentConfig {
         webUrl: webUrl,
         enableLogging: enableLogging,
         enableCaching: enableCaching,
+        rsaPublicKey: rsaPublicKey,
       ),
     );
 
