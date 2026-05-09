@@ -117,7 +117,7 @@ class SelectionField extends StatelessWidget {
               child: Text(
                 hasValue ? value! : hint,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: hasValue ? AppColors.textPrimaryLight : AppColors.hint,
+                  color: hasValue ? AppColors.textPrimaryLight : AppColors.textTertiaryLight,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -126,7 +126,7 @@ class SelectionField extends StatelessWidget {
             Icon(
               Icons.chevron_right,
               size: 20,
-              color: enabled ? AppColors.textPrimaryLight : AppColors.hint,
+              color: enabled ? AppColors.textPrimaryLight : AppColors.textTertiaryLight,
             ),
           ],
         ),

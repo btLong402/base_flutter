@@ -1,7 +1,9 @@
 import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:base_flutter/core/base/theme/app_dimensions.dart';
 import 'package:base_flutter/core/base/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Standardized TextField widget for the ChatOps Design System
 ///
@@ -233,13 +235,13 @@ class AppTextField extends StatelessWidget {
   final TextAlign textAlign;
 
   // Design Tokens - Reference Style
-  static const double _borderRadius = 16;
-  static const double _fontSize = 14;
-  static const double _iconSize = 18;
-  static const EdgeInsets _contentPadding = EdgeInsets.symmetric(
-    horizontal: 14,
-    vertical: 12,
-  );
+  static double get _borderRadius => AppDimensions.rsm;
+  static double get _fontSize => 14.sp;
+  static double get _iconSize => AppDimensions.iconSm;
+  static EdgeInsets get _contentPadding => EdgeInsets.symmetric(
+        horizontal: AppDimensions.md,
+        vertical: AppDimensions.vsm + 4,
+      );
 
   @override
   Widget build(BuildContext context) {

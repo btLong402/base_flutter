@@ -35,7 +35,7 @@ class FormPickerTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: AppColors.hint),
+              Icon(icon, size: 18, color: AppColors.textSecondaryLight),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -44,7 +44,7 @@ class FormPickerTile extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: disabled || isPlaceholder
-                        ? AppColors.hint
+                        ? AppColors.textSecondaryLight
                         : AppColors.textPrimaryLight,
                   ),
                 ),
@@ -53,7 +53,7 @@ class FormPickerTile extends StatelessWidget {
                 const Icon(
                   Icons.chevron_right,
                   size: 18,
-                  color: AppColors.hint,
+                  color: AppColors.textSecondaryLight,
                 ),
             ],
           ),

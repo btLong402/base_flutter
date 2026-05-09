@@ -1,206 +1,132 @@
 import 'package:flutter/material.dart';
 
-/// ChatOps Design System - Color Palette
-///
-/// Based on DESIGN_SYSTEM.md specifications.
-/// Primary Blue: #1A56DB
+/// App Design System - Color Palette
+/// 
+/// A professional, scalable color system based on modern design standards.
+/// Uses a Slate-based neutral palette and Indigo-based primary palette.
 class AppColors {
   AppColors._();
 
   // ============================================
-  // PRIMARY PALETTE - Từ UI Screenshots
+  // PRIMARY (Indigo)
   // ============================================
+  static const Color primary50 = Color(0xFFEEF2FF);
+  static const Color primary100 = Color(0xFFE0E7FF);
+  static const Color primary200 = Color(0xFFC7D2FE);
+  static const Color primary300 = Color(0xFFA5B4FC);
+  static const Color primary400 = Color(0xFF818CF8);
+  static const Color primary500 = Color(0xFF6366F1);
+  static const Color primary600 = Color(0xFF4F46E5);
+  static const Color primary700 = Color(0xFF4338CA);
+  static const Color primary800 = Color(0xFF3730A3);
+  static const Color primary900 = Color(0xFF312E81);
 
-  /// Primary Blue - Main CTA
-  /// Used for: Header badges, Primary buttons
-  static const Color primary = Color(0xFF1A56DB);
-
-  /// Primary Dark - Darker variant
-  static const Color primaryDark = Color(0xFF1E40AF);
-
-  /// Primary Light - Lighter variant
-  static const Color primaryLight = Color(0xFF3B82F6);
-
-  /// Light Blue - Background variant
-  /// Used for: Card backgrounds, Sections
-  static const Color primaryBackground = Color(0xFFEBF5FF);
-
-  /// Primary Gradient
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [primaryLight, primary, primaryDark],
-  );
-
-  /// Premium Indigo Gradient for Calm Productivity Identity
-  static const LinearGradient premiumIndigoGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF6366F1), // Indigo Light
-      Color(0xFF4F46E5), // Indigo Primary
-      Color(0xFF3730A3), // Indigo Dark
-    ],
-  );
+  static const Color primary = primary600;
+  static const Color primaryDark = primary700;
+  static const Color primaryLight = primary400;
 
   // ============================================
-  // SECONDARY COLORS
+  // SECONDARY (Violet)
   // ============================================
-
-  static const Color secondary = Color(0xFF10B981);
-  static const Color secondaryDark = Color(0xFF059669);
-  static const Color secondaryLight = Color(0xFF34D399);
-
-  // ============================================
-  // CHAT BUBBLE COLORS
-  // ============================================
-
-  /// My Message - Blue (góc phải)
-  static const Color myMessageLight = Color(0xFF1A56DB);
-  static const Color myMessageDark = Color(0xFF3B82F6);
-
-  /// Their Message - Gray (góc trái)
-  static const Color theirMessageLight = Color(0xFFF3F4F6);
-  static const Color theirMessageDark = Color(0xFF374151);
-
-  /// System Message - Light blue
-  static const Color systemMessageLight = Color(0xFFEBF5FF);
-  static const Color systemMessageDark = Color(0xFF1E3A5F);
-
-  /// Alert Message - Amber
-  static const Color alertMessageLight = Color(0xFFFEF3C7);
-  static const Color alertMessageDark = Color(0xFF78350F);
+  static const Color secondary50 = Color(0xFFF5F3FF);
+  static const Color secondary500 = Color(0xFF8B5CF6);
+  static const Color secondary600 = Color(0xFF7C3AED);
+  
+  static const Color secondary = secondary600;
 
   // ============================================
-  // STATUS INDICATOR COLORS
+  // NEUTRALS (Slate)
   // ============================================
-
-  /// Đang chờ - Amber
-  static const Color statusPending = Color(0xFFF59E0B);
-
-  /// Đang chạy - Blue
-  static const Color statusInProgress = Color(0xFF3B82F6);
-
-  /// Chờ thu tiền - Orange
-  static const Color statusAwaitingPayment = Color(0xFFF97316);
-
-  /// Hoàn thành - Green
-  static const Color statusCompleted = Color(0xFF22C55E);
-
-  /// Hủy - Red
-  static const Color statusCancelled = Color(0xFFEF4444);
-
-  /// Online - Green
-  static const Color statusOnline = Color(0xFF22C55E);
-
-  /// Offline - Gray
-  static const Color statusOffline = Color(0xFF9CA3AF);
-
-  // Status aliases for convenience
-  static const Color statusActive = statusInProgress;
-  static const Color statusSuccess = statusCompleted;
-  static const Color statusWarning = statusAwaitingPayment;
-  static const Color statusError = statusCancelled;
+  static const Color slate50 = Color(0xFFF8FAFC);
+  static const Color slate100 = Color(0xFFF1F5F9);
+  static const Color slate200 = Color(0xFFE2E8F0);
+  static const Color slate300 = Color(0xFFCBD5E1);
+  static const Color slate400 = Color(0xFF94A3B8);
+  static const Color slate500 = Color(0xFF64748B);
+  static const Color slate600 = Color(0xFF475569);
+  static const Color slate700 = Color(0xFF334155);
+  static const Color slate800 = Color(0xFF1E293B);
+  static const Color slate900 = Color(0xFF0F172A);
+  static const Color slate950 = Color(0xFF020617);
 
   // ============================================
-  // SEMANTIC COLORS - Financial
+  // SEMANTIC COLORS
   // ============================================
 
-  /// Thu vào (xanh lá)
-  static const Color income = Color(0xFF22C55E);
+  // Success (Emerald)
+  static const Color success50 = Color(0xFFECFDF5);
+  static const Color success500 = Color(0xFF10B981);
+  static const Color success600 = Color(0xFF059669);
+  static const Color success = success600;
 
-  /// Chi ra (đỏ)
-  static const Color expense = Color(0xFFEF4444);
+  // Error (Rose)
+  static const Color error50 = Color(0xFFFFF1F2);
+  static const Color error500 = Color(0xFFF43F5E);
+  static const Color error600 = Color(0xFFE11D48);
+  static const Color error = error600;
 
-  /// Còn nợ (cam)
-  static const Color debt = Color(0xFFF97316);
+  // Warning (Amber)
+  static const Color warning50 = Color(0xFFFFFBEB);
+  static const Color warning500 = Color(0xFFF59E0B);
+  static const Color warning600 = Color(0xFFD97706);
+  static const Color warning = warning600;
 
-  /// Lợi nhuận (emerald)
-  static const Color profit = Color(0xFF10B981);
-
-  // ============================================
-  // ROLE COLORS
-  // ============================================
-
-  /// Quản lý (tím)
-  static const Color roleAdmin = Color(0xFF8B5CF6);
-
-  /// Tài xế (xanh)
-  static const Color roleDriver = Color(0xFF3B82F6);
-
-  /// Bốc xếp (vàng)
-  static const Color roleWorker = Color(0xFFF59E0B);
-
-  /// Sales (hồng)
-  static const Color roleSales = Color(0xFFEC4899);
+  // Info (Sky)
+  static const Color info50 = Color(0xFFF0F9FF);
+  static const Color info500 = Color(0xFF0EA5E9);
+  static const Color info600 = Color(0xFF0284C7);
+  static const Color info = info600;
 
   // ============================================
-  // GENERAL SEMANTIC COLORS
+  // BACKGROUND & SURFACE (Light Mode)
   // ============================================
-
-  static const Color success = Color(0xFF22C55E);
-  static const Color error = Color(0xFFEF4444);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color info = Color(0xFF3B82F6);
-
-  // ============================================
-  // BACKGROUND COLORS (Light)
-  // ============================================
-
-  static const Color backgroundLight = Color(0xFFF9FAFB);
+  static const Color backgroundLight = Color(0xFFF8FAFC); // slate50
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color cardLight = Color(0xFFFFFFFF);
-  static const Color surface = surfaceLight;
+  
+  // ============================================
+  // BACKGROUND & SURFACE (Dark Mode)
+  // ============================================
+  static const Color backgroundDark = Color(0xFF0F172A); // slate900
+  static const Color surfaceDark = Color(0xFF1E293B);    // slate800
+  static const Color cardDark = Color(0xFF1E293B);       // slate800
 
   // ============================================
-  // BACKGROUND COLORS (Dark)
+  // TEXT COLORS
   // ============================================
+  
+  // Light Mode Text
+  static const Color textPrimaryLight = Color(0xFF0F172A);   // slate900
+  static const Color textSecondaryLight = Color(0xFF475569); // slate600
+  static const Color textTertiaryLight = Color(0xFF94A3B8);  // slate400
+  static const Color textDisabledLight = Color(0xFFCBD5E1);  // slate300
 
-  static const Color backgroundDark = Color(0xFF111827);
-  static const Color surfaceDark = Color(0xFF1F2937);
-  static const Color cardDark = Color(0xFF374151);
-
-  // ============================================
-  // TEXT COLORS (Light)
-  // ============================================
-
-  static const Color textPrimaryLight = Color(0xFF111827);
-  static const Color textSecondaryLight = Color(0xFF6B7280);
-  static const Color textDisabledLight = Color(0xFF9CA3AF);
-  static const Color textSecondary = textSecondaryLight;
-
-  // ============================================
-  // TEXT COLORS (Dark)
-  // ============================================
-
-  static const Color textPrimaryDark = Color(0xFFF9FAFB);
-  static const Color textSecondaryDark = Color(0xFFD1D5DB);
-  static const Color textDisabledDark = Color(0xFF6B7280);
+  // Dark Mode Text
+  static const Color textPrimaryDark = Color(0xFFF8FAFC);    // slate50
+  static const Color textSecondaryDark = Color(0xFF94A3B8);  // slate400
+  static const Color textTertiaryDark = Color(0xFF64748B);   // slate500
+  static const Color textDisabledDark = Color(0xFF334155);   // slate700
 
   // ============================================
-  // DIVIDER & BORDER
+  // BORDER & DIVIDER
   // ============================================
-
-  static const Color dividerLight = Color(0xFFE5E7EB);
-  static const Color dividerDark = Color(0xFF374151);
-  static const Color borderLight = Color(0xFFE5E7EB);
-  static const Color borderDark = Color(0xFF4B5563);
-  static const Color glassBorder = Color(0xFFFFFFFF);
+  static const Color borderLight = Color(0xFFE2E8F0);        // slate200
+  static const Color borderDark = Color(0xFF334155);         // slate700
+  static const Color dividerLight = Color(0xFFF1F5F9);       // slate100
+  static const Color dividerDark = Color(0xFF1E293B);        // slate800
 
   // ============================================
-  // INPUT
+  // INPUT & INTERACTIVE
   // ============================================
-
-  static const Color inputFillLight = Color(0xFFF3F4F6);
-  static const Color inputFillDark = Color(0xFF374151);
-  static const Color hint = Color(0xFF9CA3AF);
-  static const Color disabled = Color(0xFFD1D5DB);
-  static const Color border = Color(0xFFE5E7EB);
+  static const Color inputFillLight = Color(0xFFFFFFFF);
+  static const Color inputFillDark = Color(0xFF0F172A);
+  
+  static const Color disabledLight = Color(0xFFF1F5F9);
+  static const Color disabledDark = Color(0xFF1E293B);
 
   // ============================================
   // SHADOW
   // ============================================
-
-  static const Color shadowLight = Color(0x1F000000);
-  static const Color shadowDark = Color(0x5FFFFFFF);
+  static const Color shadowLight = Color(0x0F000000);
+  static const Color shadowDark = Color(0x3F000000);
 }

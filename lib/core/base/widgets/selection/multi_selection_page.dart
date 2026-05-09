@@ -229,7 +229,6 @@ class _MultiSelectionPageState<T> extends State<MultiSelectionPage<T>> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: AppColors.primaryBackground,
       child: Text(
         'Đã chọn ${_selectedMap.length} mục',
         style: theme.textTheme.bodySmall?.copyWith(
@@ -267,7 +266,7 @@ class _MultiSelectionPageState<T> extends State<MultiSelectionPage<T>> {
                       : const Icon(
                           Icons.radio_button_unchecked,
                           key: ValueKey('unchecked'),
-                          color: AppColors.hint,
+                          color: AppColors.textTertiaryLight,
                           size: 22,
                         ),
                 ),
@@ -291,7 +290,7 @@ class _MultiSelectionPageState<T> extends State<MultiSelectionPage<T>> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.inbox_outlined, size: 48, color: AppColors.hint),
+          const Icon(Icons.inbox_outlined, size: 48, color: AppColors.textTertiaryLight),
           const SizedBox(height: 12),
           Text(
             widget.emptyMessage,

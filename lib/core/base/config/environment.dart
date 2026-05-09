@@ -55,8 +55,7 @@ class EnvironmentConfig {
   static const String _cachingKey = 'ENABLE_CACHING';
   static const String _baseUrlKey = 'API_BASE_URL';
   static const String _webUrlKey = 'WEB_BASE_URL';
-  static const String _defaultWebUrl = 'https://thienbao.itomosoft.com';
-  static const String _defaultEnv = 'development';
+  static const String _defaultWebUrl = 'https://app-base-flutter.com';
   static const String _filePrefix = 'assets/env/.env';
   static const String _defaultFile = 'assets/env/.env.development';
 

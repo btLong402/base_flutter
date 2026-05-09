@@ -114,7 +114,7 @@ class _AnimatedSearchAppBarState extends State<AnimatedSearchAppBar>
                     suffixIcon: value.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.close, size: 18),
-                            color: AppColors.hint,
+                            color: AppColors.textTertiaryLight,
                             onPressed: () {
                               _searchController.clear();
                               widget.onSearchChanged('');

@@ -60,7 +60,7 @@ class SelectionItemTile extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: AppColors.primaryBackground,
+        color: AppColors.primary50,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Icon(

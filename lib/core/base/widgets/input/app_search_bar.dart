@@ -37,7 +37,7 @@ class AppSearchBar extends StatelessWidget {
           suffixIcon: hasText
               ? IconButton(
                   icon: const Icon(Icons.close, size: 18),
-                  color: AppColors.hint,
+                  color: AppColors.textSecondaryLight,
                   onPressed: () {
                     controller.clear();
                     onChanged?.call('');
