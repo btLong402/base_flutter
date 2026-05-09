@@ -74,7 +74,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i337.AesCryptoService(gh<_i851.SecureStorage>()),
     );
     gh.factory<_i424.CryptographyInterceptor>(
-      () => _i424.CryptographyInterceptor(gh<_i337.CryptoService>()),
+      () => _i424.CryptographyInterceptor(
+        gh<_i337.CryptoService>(),
+        gh<_i230.AppEnvironment>(),
+      ),
     );
     gh.lazySingleton<_i778.DioClient>(
       () => coreModule.dioClient(
