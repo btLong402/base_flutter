@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/widgets.dart';
 
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/pagination_mixins.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
 
 typedef LoadPageCallback<T> =
@@ -85,7 +86,8 @@ typedef LoadPageCallback<T> =
 
 /// Encapsulates page-based fetching logic with built-in debouncing,
 /// deduplication, refresh, and retry helpers.
-class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
+class PaginationController<T> extends ChangeNotifier
+    with SafeNotifierMixin, PaginationCRUDMixin<T> {
   PaginationController({
     required this.loadPage,
     this.pageSize = InfiniteScrollDefaults.pageSize,
@@ -100,8 +102,8 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
          preloadFraction > 0 && preloadFraction <= 1,
          'preloadFraction must be between 0 (exclusive) and 1 (inclusive)',
        ) {
+    nextPage = initialPage;
     if (autoStart) {
-      // Delay to allow listeners to attach before the first fetch.
       scheduleMicrotask(refresh);
     }
   }
@@ -115,7 +117,6 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
   final bool Function(List<T> newItems)? hasMoreResolver;
   final bool autoStart;
 
-  final LinkedHashMap<int, List<T>> _pages = LinkedHashMap<int, List<T>>();
   final Map<int, Future<List<T>>> _inFlightRequests = {};
 
   Timer? _debounceTimer;
@@ -125,10 +126,6 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
   double? _lastTriggeredMaxExtent;
   bool _isRefreshing = false;
   bool _isLoadingMore = false;
-  bool _hasMore = true;
-  bool _initialized = false;
-  Object? _error;
-  int _nextPage = InfiniteScrollDefaults.initialPage;
   int? _lastRequestedPage;
   DateTime? _lastLoadInvocation;
   bool _throttleActive = false;
@@ -137,16 +134,10 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
 
   bool get isRefreshing => _isRefreshing;
   bool get isLoadingMore => _isLoadingMore;
-  bool get isInitialized => _initialized;
-  bool get hasMore => _hasMore;
-  Object? get error => _error;
-  int get itemCount =>
-      _pages.values.fold<int>(0, (total, items) => total + items.length);
-  bool get hasItems => itemCount > 0;
+  bool get isInitialized => initialized;
   Map<String, dynamic>? get summary => _summary;
   int get totalRecords => _totalRecords;
 
-  /// Updates metadata such as total count and summary from the latest response.
   void updateMetadata({Map<String, dynamic>? summary, int? totalRecords}) {
     _summary = summary;
     if (totalRecords != null) {
@@ -155,17 +146,15 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
     safeNotifyListeners();
   }
 
-  /// Returns a flattened view of the cached pages.
   List<T> get items =>
-      _pages.values.expand((page) => page).toList(growable: false);
+      pagesState.values.expand((page) => page).toList(growable: false);
 
-  /// Retrieves the item at the provided index, or null when not loaded yet.
   T? itemAt(int index) {
     if (index < 0 || index >= itemCount) {
       return null;
     }
     var offset = 0;
-    for (final page in _pages.values) {
+    for (final page in pagesState.values) {
       if (index < offset + page.length) {
         return page[index - offset];
       }
@@ -174,28 +163,21 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
     return null;
   }
 
-  /// Currently cached page numbers.
-  Iterable<int> get loadedPages => _pages.keys;
+  Iterable<int> get loadedPages => pagesState.keys;
 
-  /// Public API to force a refresh.
-  ///
-  /// Clears current data and reloads from the first page. Safe to call
-  /// multiple times - duplicate refresh requests are ignored.
   Future<void> refresh() async {
-    if (_isRefreshing) {
-      return;
-    }
+    if (_isRefreshing) return;
     _isRefreshing = true;
-    _error = null;
-    _lastTriggeredMaxExtent = null; // Reset trigger guard on refresh
+    errorState = null;
+    _lastTriggeredMaxExtent = null;
     safeNotifyListeners();
 
-    final previousPages = LinkedHashMap<int, List<T>>.from(_pages);
+    final previousPages = LinkedHashMap<int, List<T>>.from(pagesState);
     try {
       final newItems = await _fetchPage(initialPage);
       _replaceWithInitialPage(newItems);
       _isRefreshing = false;
-      _initialized = true;
+      initialized = true;
       safeNotifyListeners();
     } on Object catch (error, stackTrace) {
       developer.log(
@@ -205,28 +187,17 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
         stackTrace: stackTrace,
       );
       _isRefreshing = false;
-      _error = error;
-      _pages
+      errorState = error;
+      pagesState
         ..clear()
         ..addAll(previousPages);
       safeNotifyListeners();
     }
   }
 
-  /// Requests the next page when available.
-  ///
-  /// Implements rate limiting to prevent duplicate requests during rapid
-  /// scrolling. Only allows one in-flight load-more request at a time.
-  ///
-  /// Set [bypassRateLimit] to true for explicit user actions like retry,
-  /// which should not be throttled.
   Future<void> loadMore({bool bypassRateLimit = false}) async {
-    if (!_hasMore || _isLoadingMore) {
-      return;
-    }
+    if (!hasMore || _isLoadingMore) return;
 
-    // Enforce minimum interval between load-more calls to prevent duplicate
-    // requests if scroll events fire rapidly. Bypass for explicit user actions.
     if (!bypassRateLimit &&
         _lastLoadInvocation != null &&
         DateTime.now().difference(_lastLoadInvocation!) <
@@ -234,8 +205,6 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
       return;
     }
 
-    // CRITICAL FIX: Cancel any pending scroll-triggered loadMore and reset
-    // scroll tracking to prevent duplicate calls during and after the load
     _debounceTimer?.cancel();
     _throttleTimer?.cancel();
     _throttleActive = false;
@@ -244,20 +213,16 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
 
     _lastLoadInvocation = DateTime.now();
     _isLoadingMore = true;
-    _error = null;
+    errorState = null;
     safeNotifyListeners();
 
-    final targetPage = _nextPage;
+    final targetPage = nextPage;
 
     try {
       final items = await _fetchPage(targetPage);
       _appendPage(targetPage, items);
       _isLoadingMore = false;
-
-      // CRITICAL FIX: Reset maxExtent guard after successful load to allow
-      // next trigger once the grid rebuilds with new items and extent increases
       _lastTriggeredMaxExtent = null;
-
       safeNotifyListeners();
     } on Object catch (error, stackTrace) {
       developer.log(
@@ -267,19 +232,14 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
         stackTrace: stackTrace,
       );
       _isLoadingMore = false;
-      _error = error;
+      errorState = error;
       safeNotifyListeners();
     }
   }
 
-  /// Replays the last failed request.
-  ///
-  /// Bypasses rate limiting since this is an explicit user action.
   Future<void> retry() async {
-    if (_lastRequestedPage == null) {
-      return;
-    }
-    if (!_initialized) {
+    if (_lastRequestedPage == null) return;
+    if (!initialized) {
       await refresh();
       return;
     }
@@ -290,38 +250,20 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
     }
   }
 
-  /// Handles scroll notifications and triggers load-more when the threshold
-  /// is met.
-  ///
-  /// Uses throttling to limit how often we check scroll position, combined with
-  /// debouncing to batch rapid scroll events. This prevents excessive CPU usage
-  /// during fast scrolling while still being responsive.
-  ///
-  /// PERFORMANCE FIX: Proper throttle implementation that stores latest metrics
-  /// and processes them when throttle window expires. This prevents duplicate
-  /// loadMore() calls during rapid scrolling, especially after page 10.
   void handleScrollMetrics(ScrollMetrics metrics) {
-    if (!_hasMore || _isLoadingMore) {
-      return;
-    }
+    if (!hasMore || _isLoadingMore) return;
 
-    // Throttle: ignore updates while throttle window is active, but store
-    // the latest metrics to process when the window closes
     if (_throttleActive) {
       _pendingMetrics = metrics;
       return;
     }
 
-    // Process current metrics immediately
     _processScrollMetrics(metrics);
 
-    // Activate throttle window
     _throttleActive = true;
     _throttleTimer?.cancel();
     _throttleTimer = Timer(InfiniteScrollDefaults.throttleDuration, () {
       _throttleActive = false;
-
-      // Process pending metrics if any accumulated during throttle window
       if (_pendingMetrics != null) {
         final pending = _pendingMetrics;
         _pendingMetrics = null;
@@ -331,19 +273,12 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
   }
 
   void _processScrollMetrics(ScrollMetrics metrics) {
-    // Store the latest scroll metrics for validation in loadMore
     _lastScrollMetrics = metrics;
-
-    // Debounce: delay the actual load-more check to batch rapid events
     _debounceTimer?.cancel();
     _debounceTimer = Timer(debounceDuration, () {
-      // Re-validate with latest metrics before triggering
       final latestMetrics = _lastScrollMetrics;
       if (latestMetrics == null) return;
 
-      // CRITICAL FIX: Prevent duplicate triggers for the SAME maxScrollExtent.
-      // But use a tighter tolerance (5%) and allow triggers when extent
-      // increases significantly, which indicates new content has been rendered.
       final currentMaxExtent = latestMetrics.maxScrollExtent;
       if (_lastTriggeredMaxExtent != null) {
         final tolerance =
@@ -351,16 +286,8 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
             InfiniteScrollDefaults.maxExtentTolerance;
         final diff = currentMaxExtent - _lastTriggeredMaxExtent!;
 
-        // Skip trigger only if extent is nearly identical or decreased
-        if (diff < tolerance && diff >= 0) {
-          // maxExtent is nearly the same - skip duplicate trigger
-          return;
-        }
-
-        // If extent decreased significantly, reset guard to allow re-trigger
-        if (diff < -tolerance) {
-          _lastTriggeredMaxExtent = null;
-        }
+        if (diff < tolerance && diff >= 0) return;
+        if (diff < -tolerance) _lastTriggeredMaxExtent = null;
       }
 
       if (shouldTriggerLoadMore(
@@ -376,9 +303,7 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
   Future<List<T>> _fetchPage(int page) {
     _lastRequestedPage = page;
     final existing = _inFlightRequests[page];
-    if (existing != null) {
-      return existing;
-    }
+    if (existing != null) return existing;
 
     final future = loadPage(
       page: page,
@@ -392,133 +317,52 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
   }
 
   void _replaceWithInitialPage(List<T> newItems) {
-    _pages
+    pagesState
       ..clear()
       ..[initialPage] = newItems;
-    _nextPage = initialPage + 1;
-    _hasMore = _resolveHasMore(newItems);
+    nextPage = initialPage + 1;
+    hasMore = resolveHasMore(newItems, pageSize, hasMoreResolver);
     onPageLoaded?.call(newItems);
   }
 
   void _appendPage(int page, List<T> newItems) {
     if (newItems.isEmpty) {
-      _hasMore = false;
+      hasMore = false;
       return;
     }
-
-    _pages[page] = newItems;
-    _nextPage = page + 1;
-    _hasMore = _resolveHasMore(newItems);
+    pagesState[page] = newItems;
+    nextPage = page + 1;
+    hasMore = resolveHasMore(newItems, pageSize, hasMoreResolver);
     onPageLoaded?.call(newItems);
   }
 
-  bool _resolveHasMore(List<T> newItems) {
-    if (hasMoreResolver != null) {
-      return hasMoreResolver!(newItems);
-    }
-    return newItems.length >= pageSize;
-  }
+  bool get hasItems => itemCount > 0;
+  Object? get error => errorState;
 
-  // ─────────────────────────────────────────────
-  // External data injection
-  // ─────────────────────────────────────────────
-
-  /// Replaces the current items with [newItems] without making a network call.
-  ///
-  /// Useful when data arrives from an external source (e.g. Riverpod provider,
-  /// socket event) and you want to push it directly into the controller.
   void replaceItems(List<T> newItems) {
-    _pages
-      ..clear()
-      ..[initialPage] = List<T>.unmodifiable(newItems);
-    _nextPage = initialPage + 1;
-    _hasMore = _resolveHasMore(newItems);
-    _initialized = true;
-    _error = null;
-    safeNotifyListeners();
+    performReplaceItems(
+      newItems,
+      initialPage: initialPage,
+      pageSize: pageSize,
+      hasMoreResolver: hasMoreResolver,
+    );
   }
 
-  // ─────────────────────────────────────────────
-  // CRUD Operations — local item manipulation
-  // ─────────────────────────────────────────────
-
-  /// Updates an existing item identified by [test].
-  ///
-  /// Returns `true` if an item was found and replaced.
-  /// Does **not** trigger a network request.
   bool updateItemWhere(bool Function(T item) test, T Function(T item) updater) {
-    for (final entry in _pages.entries) {
-      final page = entry.value;
-      for (var i = 0; i < page.length; i++) {
-        if (test(page[i])) {
-          final mutable = List<T>.of(page);
-          mutable[i] = updater(page[i]);
-          _pages[entry.key] = List<T>.unmodifiable(mutable);
-          safeNotifyListeners();
-          return true;
-        }
-      }
-    }
-    return false;
+    return performUpdateItemWhere(test, updater);
   }
 
-  /// Removes all items matching [test].
-  ///
-  /// Returns the number of items removed.
   int removeItemsWhere(bool Function(T item) test) {
-    var removed = 0;
-    for (final entry in _pages.entries.toList()) {
-      final before = entry.value.length;
-      final filtered = entry.value.where((e) => !test(e)).toList();
-      if (filtered.length < before) {
-        _pages[entry.key] = List<T>.unmodifiable(filtered);
-        removed += before - filtered.length;
-      }
-    }
-    if (removed > 0) safeNotifyListeners();
-    return removed;
+    return performRemoveItemsWhere(test);
   }
 
-  /// Inserts [item] at position [index] within the flattened list.
-  ///
-  /// If [index] exceeds the item count, appends to the last page.
   void insertItem(int index, T item) {
-    var offset = 0;
-    for (final entry in _pages.entries) {
-      final page = entry.value;
-      if (index <= offset + page.length) {
-        final mutable = List<T>.of(page)..insert(index - offset, item);
-        _pages[entry.key] = List<T>.unmodifiable(mutable);
-        safeNotifyListeners();
-        return;
-      }
-      offset += page.length;
-    }
-    // Append to last page if index out of range
-    if (_pages.isNotEmpty) {
-      final lastKey = _pages.keys.last;
-      final mutable = List<T>.of(_pages[lastKey]!)..add(item);
-      _pages[lastKey] = List<T>.unmodifiable(mutable);
-      safeNotifyListeners();
-    } else {
-      // Create first page if empty
-      _pages[initialPage] = List<T>.unmodifiable([item]);
-      _hasMore = false; // Single item, assuming no more for now unless fetched
-      safeNotifyListeners();
-    }
+    performInsertItem(index, item, initialPage: initialPage);
   }
 
-  /// Clears all data and resets to uninitialized state.
-  ///
-  /// Unlike [refresh], this does **not** re-fetch from the server.
   void clear() {
-    _pages.clear();
-    _nextPage = initialPage;
-    _hasMore = true;
-    _initialized = false;
-    _error = null;
+    performClear(initialPage: initialPage);
     _lastTriggeredMaxExtent = null;
-    safeNotifyListeners();
   }
 
   @override
@@ -527,13 +371,10 @@ class PaginationController<T> extends ChangeNotifier with SafeNotifierMixin {
     _throttleTimer?.cancel();
     _debounceTimer = null;
     _throttleTimer = null;
-
-    // Cancel in-flight requests to prevent callbacks after dispose
     for (final future in _inFlightRequests.values) {
       future.ignore();
     }
     _inFlightRequests.clear();
-
     super.dispose();
   }
 }
