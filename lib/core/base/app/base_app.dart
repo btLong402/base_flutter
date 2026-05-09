@@ -34,7 +34,10 @@ class BaseApp extends HookConsumerWidget {
           routerConfig: router,
           // Global Builder for Toast and Extensions
           builder: (context, child) {
-            return FToastBuilder()(context, child);
+            return GestureDetector(
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              child: FToastBuilder()(context, child),
+            );
           },
         );
       },

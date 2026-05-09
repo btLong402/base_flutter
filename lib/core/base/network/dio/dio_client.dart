@@ -1,6 +1,8 @@
 import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/constants/app_constants.dart';
 import 'package:base_flutter/core/base/network/cookies/app_cookie_manager.dart';
+import 'package:base_flutter/core/base/network/crypto/crypto_service.dart';
+import 'package:base_flutter/core/base/network/interceptor/cryptography_interceptor.dart';
 import 'package:base_flutter/core/base/network/interceptor/error_interceptor.dart';
 import 'package:base_flutter/core/base/storage/token_storage.dart';
 import 'package:base_flutter/core/base/storage/user_preferences.dart';
@@ -16,6 +18,8 @@ class DioClient {
     required this.cookieManager,
     required this.tokenStorage,
     required this.userPreferences,
+    required this.cryptoService,
+    required this.cryptoInterceptor,
     this.connectTimeout = AppConstants.connectTimeout,
     this.receiveTimeout = AppConstants.receiveTimeout,
     this.sendTimeout = AppConstants.sendTimeout,
@@ -44,6 +48,8 @@ class DioClient {
   final AppCookieManager cookieManager;
   final TokenStorage tokenStorage;
   final UserPreferences userPreferences;
+  final CryptoService cryptoService;
+  final CryptographyInterceptor cryptoInterceptor;
 
   /// Callback triggered when a 401 Unauthorized response is received,
   /// indicating both access and refresh tokens have expired.
@@ -58,6 +64,9 @@ class DioClient {
     // Cookie interceptor must be first to ensure cookies are synced
     _dio.interceptors.add(cookieManager.dioInterceptor);
 
+    // Cryptography interceptor
+    _dio.interceptors.add(cryptoInterceptor);
+
     // Cache interceptor
     if (enableCaching) {
       _dio.interceptors.add(_getCacheInterceptor());
@@ -71,7 +80,7 @@ class DioClient {
     }
 
     // Error interceptor (must be last to catch all errors)
-    _dio.interceptors.add(ErrorInterceptor());
+    _dio.interceptors.add(ErrorInterceptor(cryptoService, _dio));
   }
 
   /// Get cache interceptor with Hive store

@@ -1,6 +1,8 @@
 import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/network/cookies/app_cookie_manager.dart';
+import 'package:base_flutter/core/base/network/crypto/crypto_service.dart';
 import 'package:base_flutter/core/base/network/dio/dio_client.dart';
+import 'package:base_flutter/core/base/network/interceptor/cryptography_interceptor.dart';
 import 'package:base_flutter/core/base/storage/token_storage.dart';
 import 'package:base_flutter/core/base/storage/user_preferences.dart';
 import 'package:dio/dio.dart';
@@ -57,11 +59,15 @@ abstract class CoreModule {
     AppCookieManager cookieManager,
     TokenStorage tokenStorage,
     UserPreferences userPreferences,
+    CryptoService cryptoService,
+    CryptographyInterceptor cryptoInterceptor,
   ) => DioClient(
     environment: environment,
     cookieManager: cookieManager,
     tokenStorage: tokenStorage,
     userPreferences: userPreferences,
+    cryptoService: cryptoService,
+    cryptoInterceptor: cryptoInterceptor,
   );
 
   /// Provide Dio instance from DioClient

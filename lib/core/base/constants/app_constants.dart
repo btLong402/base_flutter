@@ -14,6 +14,12 @@ class AppConstants {
   static const String languageKey = 'app_language';
   static const String userKey = 'user_data';
   static const String storeKey = 'app_store_code';
+  static const String cryptoAesKey = 'crypto_aes_key';
+  static const String cryptoAesIv = 'crypto_aes_iv';
+  static const String cryptoKeyCreatedAt = 'crypto_key_created_at';
+
+  // Network Extra Keys
+  static const String secureExtraKey = 'secure';
 
   // Cookie Keys
   static const String accessTokenCookieName = 'accessToken';
@@ -27,6 +33,9 @@ class AppConstants {
   // Pagination
   static const int defaultPageSize = 20;
   static const int maxPageSize = 100;
+
+  // Error Codes
+  static const int expiredKeyStatus = 498;
 
   // Validation
   static const int minPasswordLength = 8;
@@ -44,4 +53,5 @@ class HttpHeaders {
   static const String contentType = 'Content-Type';
   static const String accept = 'Accept';
   static const String acceptLanguage = 'Accept-Language';
+  static const String xEncrypted = 'X-Encrypted';
 }
