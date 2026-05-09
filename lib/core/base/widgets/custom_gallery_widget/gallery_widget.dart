@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/animation_utils.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/fullscreen_viewer/gallery_fullscreen_viewer.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/media_viewer.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/thumbnail_grid.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image_widget.dart';
+import 'package:flutter/material.dart';
 
 /// Public entry point that exposes a gallery capable of grid or
 /// carousel layout.

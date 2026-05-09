@@ -1,8 +1,8 @@
+import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:base_flutter/core/base/config/environment.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -66,14 +66,17 @@ class _InitialScreen extends StatelessWidget {
                   children: [
                     _InfoRow(label: 'Base URL', value: env.baseUrl),
                     Divider(height: 24.h),
-                    _InfoRow(
+                    const _InfoRow(
                       label: 'Responsive',
                       value: 'ScreenUtil Initialized',
                     ),
                     Divider(height: 24.h),
-                    _InfoRow(label: 'Navigation', value: 'GoRouter (Riverpod)'),
+                    const _InfoRow(
+                      label: 'Navigation',
+                      value: 'GoRouter (Riverpod)',
+                    ),
                     Divider(height: 24.h),
-                    _InfoRow(label: 'Theme', value: 'Dynamic Switching'),
+                    const _InfoRow(label: 'Theme', value: 'Dynamic Switching'),
                   ],
                 ),
               ),
@@ -86,10 +89,9 @@ class _InitialScreen extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.label, required this.value});
   final String label;
   final String value;
-
-  const _InfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

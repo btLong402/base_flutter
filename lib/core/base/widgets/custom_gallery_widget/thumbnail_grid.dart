@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/media_viewer.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image_widget.dart';
+import 'package:flutter/material.dart';
 
 class GalleryThumbnailGrid extends StatelessWidget {
   const GalleryThumbnailGrid({

@@ -1,6 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 /// ## Refresh Control Wrappers
 ///
 /// Provides platform-appropriate pull-to-refresh implementations:
@@ -26,8 +23,11 @@ import 'package:flutter/material.dart';
 ///   ],
 /// )
 /// ```
+library;
 
 import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 /// Material-style refresh control used for non-sliver lists.
 ///

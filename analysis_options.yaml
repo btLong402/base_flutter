@@ -1,1 +1,13 @@
-include: package:flutter_lints/flutter.yaml
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "lib/core/gen/**"
+    - "lib/core/l10n/generated/**"
+
+linter:
+  rules:
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false

@@ -252,13 +252,20 @@ class _SelectionPageState<T> extends State<SelectionPage<T>> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.inbox_outlined, size: 48, color: AppColors.textTertiaryLight),
+          const Icon(
+            Icons.inbox_outlined,
+            size: 48,
+            color: AppColors.textTertiaryLight,
+          ),
           const SizedBox(height: 12),
           Text(
             widget.emptyMessage,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: AppColors.textTertiaryLight),
+            style:
+                Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textTertiaryLight,
+                ),
           ),
         ],
       ),

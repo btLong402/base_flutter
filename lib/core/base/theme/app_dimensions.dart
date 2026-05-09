@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// App Design System - Standard Dimensions and Spacing
-/// 
-/// Uses [flutter_screenutil] for responsive scaling based on a 375x812 design.
+///
+/// Uses [ScreenUtil] for responsive scaling based on a 375x812 design.
 class AppDimensions {
   AppDimensions._();
 

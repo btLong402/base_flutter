@@ -1,10 +1,10 @@
+import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:base_flutter/core/base/theme/app_text_styles.dart';
 import 'package:base_flutter/core/base/utils/logger.dart';
+import 'package:base_flutter/core/base/widgets/scanner/scanner_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:base_flutter/core/base/theme/app_colors.dart';
-import 'package:base_flutter/core/base/theme/app_text_styles.dart';
-import 'package:base_flutter/core/base/widgets/scanner/scanner_overlay.dart';
 
 /// A full-screen barcode/QR scanner page.
 ///

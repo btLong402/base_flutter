@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'grid_models.dart';
+import 'package:base_flutter/core/base/widgets/grid/internal/grid_models.dart';
 
 /// Mixin providing advanced Masonry placement algorithms.
 mixin MasonryPlacementMixin {
@@ -15,7 +15,11 @@ mixin MasonryPlacementMixin {
 
     for (var i = 0; i <= columnCount - effectiveSpan; i++) {
       final windowMax = windowMaxHeight(i, effectiveSpan);
-      final balanceScore = _calculatePlacementScore(i, effectiveSpan, windowMax);
+      final balanceScore = _calculatePlacementScore(
+        i,
+        effectiveSpan,
+        windowMax,
+      );
 
       if (balanceScore < bestScore) {
         bestScore = balanceScore;
@@ -48,7 +52,8 @@ mixin MasonryPlacementMixin {
       }
 
       // Calculate overall balance after this placement
-      final avgHeight = tempHeights.reduce((a, b) => a + b) / tempHeights.length;
+      final avgHeight =
+          tempHeights.reduce((a, b) => a + b) / tempHeights.length;
       final variance =
           tempHeights.fold<double>(
             0,
@@ -129,7 +134,10 @@ mixin MasonryPlacementMixin {
       maxGap = math.max(maxGap, (windowMax - columnHeights[start - 1]).abs());
     }
     if (start + span < columnCount) {
-      maxGap = math.max(maxGap, (windowMax - columnHeights[start + span]).abs());
+      maxGap = math.max(
+        maxGap,
+        (windowMax - columnHeights[start + span]).abs(),
+      );
     }
     return maxGap;
   }

@@ -1,6 +1,7 @@
 import 'dart:collection';
-import 'package:flutter/widgets.dart';
+
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
+import 'package:flutter/widgets.dart';
 
 /// Mixin providing local CRUD operations for pagination controllers.
 ///
@@ -31,8 +32,11 @@ mixin PaginationCRUDMixin<T> on ChangeNotifier, SafeNotifierMixin {
       _pages.values.fold<int>(0, (total, items) => total + items.length);
 
   /// Resolves whether there are more items to load.
-  bool resolveHasMore(List<T> newItems, int pageSize,
-      bool Function(List<T> newItems)? hasMoreResolver) {
+  bool resolveHasMore(
+    List<T> newItems,
+    int pageSize,
+    bool Function(List<T> newItems)? hasMoreResolver,
+  ) {
     if (hasMoreResolver != null) {
       return hasMoreResolver(newItems);
     }
@@ -57,7 +61,10 @@ mixin PaginationCRUDMixin<T> on ChangeNotifier, SafeNotifierMixin {
   }
 
   /// Updates an existing item identified by [test].
-  bool performUpdateItemWhere(bool Function(T item) test, T Function(T item) updater) {
+  bool performUpdateItemWhere(
+    bool Function(T item) test,
+    T Function(T item) updater,
+  ) {
     for (final entry in _pages.entries) {
       final page = entry.value;
       for (var i = 0; i < page.length; i++) {

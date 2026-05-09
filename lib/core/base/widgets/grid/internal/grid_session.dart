@@ -1,11 +1,10 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
-import 'package:flutter/rendering.dart';
-
 import 'package:base_flutter/core/base/widgets/grid/internal/grid_models.dart';
 import 'package:base_flutter/core/base/widgets/grid/internal/masonry_mixins.dart';
 import 'package:base_flutter/core/base/widgets/grid/layout/grid_layout_config.dart';
+import 'package:flutter/rendering.dart';
 
 export 'package:base_flutter/core/base/widgets/grid/internal/grid_models.dart';
 
@@ -189,8 +188,12 @@ class ColumnarGridSession extends GridLayoutSession with MasonryPlacementMixin {
 
   @override
   void dropCache(int leadingIndex, int trailingIndex) {
-    _placements.removeWhere((key, _) => key >= leadingIndex && key <= trailingIndex);
-    _spanCache.removeWhere((key, _) => key >= leadingIndex && key <= trailingIndex);
+    _placements.removeWhere(
+      (key, _) => key >= leadingIndex && key <= trailingIndex,
+    );
+    _spanCache.removeWhere(
+      (key, _) => key >= leadingIndex && key <= trailingIndex,
+    );
   }
 
   @override
@@ -239,9 +242,12 @@ class ColumnarGridSession extends GridLayoutSession with MasonryPlacementMixin {
 
   void _checkAndFlagImbalance() {
     if (columnCount < 2 || columnHeights.isEmpty) return;
-    final imbalance = columnHeights.reduce(math.max) - columnHeights.reduce(math.min);
+    final imbalance =
+        columnHeights.reduce(math.max) - columnHeights.reduce(math.min);
     if (imbalance > 500.0 && _placements.isNotEmpty) {
-      final oldestKeys = _placements.keys.take(_placements.length ~/ 4).toList();
+      final oldestKeys = _placements.keys
+          .take(_placements.length ~/ 4)
+          .toList();
       for (final key in oldestKeys) {
         _placements.remove(key);
         _spanCache.remove(key);
@@ -265,7 +271,10 @@ class ColumnarGridSession extends GridLayoutSession with MasonryPlacementMixin {
   double _crossAxisOffsetForColumn(int column) {
     final baseOffset = column * (_columnWidth + crossAxisSpacing);
     if (!reverseCrossAxis) return baseOffset + _crossAxisInset;
-    return context.crossAxisExtent - _crossAxisExtentForSpan(1) - baseOffset - _crossAxisInset;
+    return context.crossAxisExtent -
+        _crossAxisExtentForSpan(1) -
+        baseOffset -
+        _crossAxisInset;
   }
 
   double _crossAxisExtentForSpan(int span) {

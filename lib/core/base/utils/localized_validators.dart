@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:base_flutter/core/l10n/l10n_extensions.dart';
+import 'package:flutter/material.dart';
 
 /// Localized form field validators
 /// These validators return localized error messages based on the current locale

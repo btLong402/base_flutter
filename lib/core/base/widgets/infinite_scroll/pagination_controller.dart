@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer' as developer;
 
-import 'package:flutter/widgets.dart';
-
 import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/pagination_mixins.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
+import 'package:flutter/widgets.dart';
 
 typedef LoadPageCallback<T> =
     Future<List<T>> Function({required int page, required int pageSize});

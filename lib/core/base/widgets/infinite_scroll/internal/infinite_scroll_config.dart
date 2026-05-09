@@ -1,4 +1,9 @@
+import 'package:base_flutter/core/base/base.dart' show InfiniteScrollView;
 import 'package:base_flutter/core/base/widgets/grid/pinterest.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll.dart'
+    show InfiniteScrollView;
+import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_view.dart'
+    show InfiniteScrollView;
 
 enum InfiniteScrollLayout { list, grid }
 

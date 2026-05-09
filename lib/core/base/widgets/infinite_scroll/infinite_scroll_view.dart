@@ -1,16 +1,15 @@
-
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:base_flutter/core/base/widgets/grid/pinterest.dart';
-import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/infinite_scroll_config.dart';
-import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/box_infinite_view.dart';
-import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/sliver_infinite_view.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/entrance_animation.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/box_infinite_view.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/infinite_scroll_config.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/sliver_infinite_view.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/load_more_footer.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/pagination_controller.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/scroll_state_widgets.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/separator_builder.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 export 'package:base_flutter/core/base/widgets/infinite_scroll/internal/infinite_scroll_config.dart';
 
@@ -177,7 +176,10 @@ class _InfiniteScrollViewState<T> extends State<InfiniteScrollView<T>> {
 
   Widget _buildBoxView() {
     final screenSize = MediaQuery.of(context).size;
-    final cacheExtent = resolveCacheExtent(widget.cacheExtent, screenSize.height);
+    final cacheExtent = resolveCacheExtent(
+      widget.cacheExtent,
+      screenSize.height,
+    );
     final physics = _resolveScrollPhysics();
     final separators = SeparatorManager(builder: widget.separatorBuilder);
     final hasFooter = controller.itemCount > 0;
@@ -247,7 +249,12 @@ class _InfiniteScrollViewState<T> extends State<InfiniteScrollView<T>> {
     );
   }
 
-  Widget _buildItem(BuildContext context, int index, T item, {bool animate = true}) {
+  Widget _buildItem(
+    BuildContext context,
+    int index,
+    T item, {
+    bool animate = true,
+  }) {
     final semanticsLabel = widget.semanticsLabelBuilder?.call(item, index);
     final itemKey =
         widget.itemKeyBuilder?.call(item, index) ?? ValueKey<int>(index);

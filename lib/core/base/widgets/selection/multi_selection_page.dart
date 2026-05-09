@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:base_flutter/core/base/widgets/app_bar/animated_search_app_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:base_flutter/core/base/widgets/app_bar/animated_search_app_bar.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll.dart';
 import 'package:base_flutter/core/base/widgets/input/app_search_bar.dart';
 import 'package:base_flutter/core/base/widgets/selection/selection_page.dart';
+import 'package:flutter/material.dart';
 
 /// Generic multi-selection page with search and infinite scroll.
 ///
@@ -290,7 +290,11 @@ class _MultiSelectionPageState<T> extends State<MultiSelectionPage<T>> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.inbox_outlined, size: 48, color: AppColors.textTertiaryLight),
+          const Icon(
+            Icons.inbox_outlined,
+            size: 48,
+            color: AppColors.textTertiaryLight,
+          ),
           const SizedBox(height: 12),
           Text(
             widget.emptyMessage,

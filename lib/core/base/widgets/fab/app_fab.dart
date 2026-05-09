@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:base_flutter/core/base/theme/app_colors.dart';
 import 'package:base_flutter/core/base/theme/app_text_styles.dart';
+import 'package:flutter/material.dart';
 
 /// Enum for FAB size variants
 enum AppFabSize { standard, small, extended }

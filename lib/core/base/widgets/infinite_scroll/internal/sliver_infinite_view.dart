@@ -1,10 +1,10 @@
 import 'package:base_flutter/core/base/widgets/grid/pinterest.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/infinite_scroll_config.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/pagination_controller.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/refresh_controls.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/scroll_state_widgets.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/separator_builder.dart';
 import 'package:flutter/material.dart';
-import 'infinite_scroll_config.dart';
-import '../pagination_controller.dart';
-import '../separator_builder.dart';
-import '../refresh_controls.dart';
-import '../scroll_state_widgets.dart';
 
 class SliverInfiniteView<T> extends StatelessWidget {
   const SliverInfiniteView({
@@ -99,8 +99,12 @@ class SliverInfiniteView<T> extends StatelessWidget {
               final item = controller.itemAt(itemIndex);
               return item == null
                   ? const SizedBox.shrink()
-                  : buildItem(ctx, itemIndex, item,
-                      animate: gridConfig!.animation == null);
+                  : buildItem(
+                      ctx,
+                      itemIndex,
+                      item,
+                      animate: gridConfig!.animation == null,
+                    );
             },
           );
         }
@@ -109,10 +113,10 @@ class SliverInfiniteView<T> extends StatelessWidget {
           gridConfig!.animation == null
               ? buildInternalChild
               : (context, index) => gridConfig!.animation!.wrap(
-                    context,
-                    index,
-                    buildInternalChild(context, index),
-                  ),
+                  context,
+                  index,
+                  buildInternalChild(context, index),
+                ),
           childCount: childCount,
           addAutomaticKeepAlives: gridConfig!.layout.addAutomaticKeepAlives,
           addRepaintBoundaries: gridConfig!.layout.addRepaintBoundaries,

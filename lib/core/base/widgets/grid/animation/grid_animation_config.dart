@@ -142,23 +142,7 @@ class GridAnimationConfig {
     );
   }
 
-  /// Legacy staggered animation (deprecated - use pinterest() instead).
-  @Deprecated('Use GridAnimationConfig.pinterest() instead')
-  factory GridAnimationConfig.staggered({
-    Duration duration = const Duration(milliseconds: 320),
-    Curve curve = Curves.easeOutCubic,
-    Duration maxDelay = const Duration(milliseconds: 220),
-    double initialOffset = 32,
-    double initialScale = 0.95,
-  }) {
-    return GridAnimationConfig.pinterest(
-      duration: duration,
-      curve: curve,
-      maxStagger: maxDelay,
-      scaleFrom: initialScale,
-      slideOffset: initialOffset,
-    );
-  }
+
   const GridAnimationConfig._(this._builder);
 
   final GridItemAnimationBuilder _builder;

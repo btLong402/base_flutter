@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/fullscreen_viewer/fullscreen_viewer_controller.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/fullscreen_viewer/zoomable_image_viewer.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/media_viewer.dart';
+import 'package:flutter/material.dart';
 
 class GalleryFullscreenViewer extends StatefulWidget {
   const GalleryFullscreenViewer({

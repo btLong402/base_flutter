@@ -7,15 +7,13 @@ environment:
   sdk: ^3.10.4
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.9
   auto_size_text: ^3.0.0
   cached_network_image: ^3.4.1
   characters: ^1.4.0
   collection: ^1.19.1
   connectivity_plus: ^7.1.1
   cookie_jar: ^4.0.9
+  cupertino_icons: ^1.0.9
   dartz: ^0.10.1
   device_info_plus: ^12.4.0
   dio: ^5.9.2
@@ -24,6 +22,8 @@ dependencies:
   equatable: ^2.0.8
   file_picker: ^11.0.2
   fl_chart: ^1.2.0
+  flutter:
+    sdk: flutter
   flutter_cache_manager: ^3.4.1
   flutter_dotenv: ^6.0.1
   flutter_hooks: ^0.21.3+1
@@ -71,13 +71,12 @@ dependencies:
   url_launcher: ^6.3.2
   uuid: ^4.5.3
   video_player: ^2.11.1
-
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
   build_runner: ^2.15.0
   flutter_gen_runner: ^5.13.0+1
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
   freezed: ^3.2.5
   hive_ce_generator: ^1.11.1
   injectable_generator: ^2.12.1
@@ -86,7 +85,6 @@ dev_dependencies:
   mocktail: ^1.0.4
   retrofit_generator: ^10.2.3
   very_good_analysis: ^10.1.0
-
 flutter:
   uses-material-design: true
   generate: true

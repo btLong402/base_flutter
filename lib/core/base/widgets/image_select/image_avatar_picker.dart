@@ -1,8 +1,8 @@
 import 'dart:io';
+
+import 'package:base_flutter/core/base/widgets/avatar/app_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../avatar/app_avatar.dart';
 
 class ImageAvatarPicker extends StatefulWidget {
   const ImageAvatarPicker({

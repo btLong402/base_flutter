@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:base_flutter/core/base/widgets/toast/services/toast_service.dart';
+import 'package:dio/dio.dart';
 
 /// Error interceptor to handle errors globally
 class ErrorInterceptor extends Interceptor {

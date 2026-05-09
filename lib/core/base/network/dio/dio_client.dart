@@ -1,3 +1,4 @@
+import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/constants/app_constants.dart';
 import 'package:base_flutter/core/base/network/cookies/app_cookie_manager.dart';
 import 'package:base_flutter/core/base/network/interceptor/error_interceptor.dart';
@@ -7,8 +8,6 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import 'package:base_flutter/core/base/config/environment.dart';
 
 /// Dio client factory
 class DioClient {

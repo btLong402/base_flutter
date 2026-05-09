@@ -31,7 +31,6 @@ abstract class CoreModule {
   /// Provide FlutterSecureStorage instance
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),

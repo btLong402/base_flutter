@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:base_flutter/core/base/widgets/grid/pinterest.dart';
-import 'infinite_scroll_config.dart';
-import '../pagination_controller.dart';
-import '../separator_builder.dart';
-import '../refresh_controls.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/internal/infinite_scroll_config.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/pagination_controller.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/refresh_controls.dart';
+import 'package:base_flutter/core/base/widgets/infinite_scroll/separator_builder.dart';
+import 'package:flutter/material.dart';
 
 class BoxInfiniteView<T> extends StatelessWidget {
   const BoxInfiniteView({

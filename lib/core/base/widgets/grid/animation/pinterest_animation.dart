@@ -1,38 +1,9 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
-import 'package:base_flutter/core/base/widgets/grid/animation/grid_animation_config.dart';
 
-/// Pinterest-style animation configuration (re-exported for convenience).
-///
-/// **Note:** This is now a type alias to the unified GridAnimationConfig.
-/// All Pinterest animation functionality has been consolidated into
-/// GridAnimationConfig for better maintainability and to eliminate code
-/// duplication.
-///
-/// **Migration Guide:**
-/// - `PinterestGridAnimationConfig.staggeredFade()` →
-///    `GridAnimationConfig.pinterest()`
-/// - `PinterestGridAnimationConfig.fadeOnly()` →
-///    `GridAnimationConfig.fadeOnly()`
-/// - `PinterestGridAnimationConfig.scaleOnly()` →
-///    `GridAnimationConfig.scaleOnly()`
-/// - `PinterestGridAnimationConfig.slideOnly()` →
-///    `GridAnimationConfig.slideOnly()`
-/// - `PinterestGridAnimationConfig.none()` →
-///    `GridAnimationConfig.none()`
-///
-/// **Usage:**
-/// ```dart
-/// // Old way (still works but deprecated)
-/// animation: PinterestGridAnimationConfig.staggeredFade()
-///
-/// // New way (recommended)
-/// animation: GridAnimationConfig.pinterest()
-/// ```
-@Deprecated(
-  'Use GridAnimationConfig instead. Will be removed in a future version.',
-)
-typedef PinterestGridAnimationConfig = GridAnimationConfig;
+
+import 'package:flutter/widgets.dart';
+
+
 
 /// Disappearing animation for items being removed from the grid.
 ///

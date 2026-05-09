@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:base_flutter/core/base/constants/app_constants.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum AppFlavor { development, staging, production }
 
@@ -76,7 +76,7 @@ class EnvironmentConfig {
   /// Active environment name.
   static String get name => current.name;
 
-  /// Loads environment variables from the specified [env] or [fileName].
+  /// Loads environment variables from the specified [flavor] or [fileName].
   ///
   /// If both are omitted the loader attempts to resolve the environment from
   /// the `APP_ENV` compile-time define. When resolution fails the development

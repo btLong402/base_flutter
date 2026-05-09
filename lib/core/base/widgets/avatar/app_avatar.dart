@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppAvatar extends StatelessWidget {
   const AppAvatar({
@@ -19,7 +19,7 @@ class AppAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double avatarSize = size ?? 40.r;
+    final avatarSize = size ?? 40.r;
 
     final avatar = Container(
       width: avatarSize,

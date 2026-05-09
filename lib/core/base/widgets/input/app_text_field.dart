@@ -239,9 +239,9 @@ class AppTextField extends StatelessWidget {
   static double get _fontSize => 14.sp;
   static double get _iconSize => AppDimensions.iconSm;
   static EdgeInsets get _contentPadding => EdgeInsets.symmetric(
-        horizontal: AppDimensions.md,
-        vertical: AppDimensions.vsm + 4,
-      );
+    horizontal: AppDimensions.md,
+    vertical: AppDimensions.vsm + 4,
+  );
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:base_flutter/core/base/widgets/toast/models/toast_type.dart';
+import 'package:flutter/material.dart';
 
 /// Configuration for a toast notification
 ///

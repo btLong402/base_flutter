@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:base_flutter/core/base/widgets/input/app_text_field.dart';
 import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:base_flutter/core/base/widgets/input/app_text_field.dart';
+import 'package:flutter/material.dart';
 
 /// An AppBar that supports an animated search field toggled by a search icon.
 class AnimatedSearchAppBar extends StatefulWidget

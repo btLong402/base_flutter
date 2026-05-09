@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// App Design System - Color Palette
-/// 
+///
 /// A professional, scalable color system based on modern design standards.
 /// Uses a Slate-based neutral palette and Indigo-based primary palette.
 class AppColors {
@@ -31,7 +31,7 @@ class AppColors {
   static const Color secondary50 = Color(0xFFF5F3FF);
   static const Color secondary500 = Color(0xFF8B5CF6);
   static const Color secondary600 = Color(0xFF7C3AED);
-  
+
   static const Color secondary = secondary600;
 
   // ============================================
@@ -83,44 +83,44 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFF8FAFC); // slate50
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color cardLight = Color(0xFFFFFFFF);
-  
+
   // ============================================
   // BACKGROUND & SURFACE (Dark Mode)
   // ============================================
   static const Color backgroundDark = Color(0xFF0F172A); // slate900
-  static const Color surfaceDark = Color(0xFF1E293B);    // slate800
-  static const Color cardDark = Color(0xFF1E293B);       // slate800
+  static const Color surfaceDark = Color(0xFF1E293B); // slate800
+  static const Color cardDark = Color(0xFF1E293B); // slate800
 
   // ============================================
   // TEXT COLORS
   // ============================================
-  
+
   // Light Mode Text
-  static const Color textPrimaryLight = Color(0xFF0F172A);   // slate900
+  static const Color textPrimaryLight = Color(0xFF0F172A); // slate900
   static const Color textSecondaryLight = Color(0xFF475569); // slate600
-  static const Color textTertiaryLight = Color(0xFF94A3B8);  // slate400
-  static const Color textDisabledLight = Color(0xFFCBD5E1);  // slate300
+  static const Color textTertiaryLight = Color(0xFF94A3B8); // slate400
+  static const Color textDisabledLight = Color(0xFFCBD5E1); // slate300
 
   // Dark Mode Text
-  static const Color textPrimaryDark = Color(0xFFF8FAFC);    // slate50
-  static const Color textSecondaryDark = Color(0xFF94A3B8);  // slate400
-  static const Color textTertiaryDark = Color(0xFF64748B);   // slate500
-  static const Color textDisabledDark = Color(0xFF334155);   // slate700
+  static const Color textPrimaryDark = Color(0xFFF8FAFC); // slate50
+  static const Color textSecondaryDark = Color(0xFF94A3B8); // slate400
+  static const Color textTertiaryDark = Color(0xFF64748B); // slate500
+  static const Color textDisabledDark = Color(0xFF334155); // slate700
 
   // ============================================
   // BORDER & DIVIDER
   // ============================================
-  static const Color borderLight = Color(0xFFE2E8F0);        // slate200
-  static const Color borderDark = Color(0xFF334155);         // slate700
-  static const Color dividerLight = Color(0xFFF1F5F9);       // slate100
-  static const Color dividerDark = Color(0xFF1E293B);        // slate800
+  static const Color borderLight = Color(0xFFE2E8F0); // slate200
+  static const Color borderDark = Color(0xFF334155); // slate700
+  static const Color dividerLight = Color(0xFFF1F5F9); // slate100
+  static const Color dividerDark = Color(0xFF1E293B); // slate800
 
   // ============================================
   // INPUT & INTERACTIVE
   // ============================================
   static const Color inputFillLight = Color(0xFFFFFFFF);
   static const Color inputFillDark = Color(0xFF0F172A);
-  
+
   static const Color disabledLight = Color(0xFFF1F5F9);
   static const Color disabledDark = Color(0xFF1E293B);
 

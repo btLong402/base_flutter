@@ -1,10 +1,10 @@
 import 'package:base_flutter/core/base/widgets/empty/app_empty_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll.dart'
     show InfiniteScrollView;
 import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_view.dart'
     show InfiniteScrollView;
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 /// Reusable state display widgets for [InfiniteScrollView].
 ///

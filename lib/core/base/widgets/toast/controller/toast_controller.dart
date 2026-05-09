@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:base_flutter/core/base/widgets/toast/models/toast_config.dart';
 import 'package:base_flutter/core/base/widgets/toast/widgets/toast_widget.dart';
+import 'package:flutter/material.dart';
 
 /// High-performance toast controller with overlay management
 ///

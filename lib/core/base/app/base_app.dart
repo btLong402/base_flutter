@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/theme/theme_provider.dart';
 import 'package:base_flutter/core/router/app_router.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BaseApp extends ConsumerWidget {
   const BaseApp({super.key});

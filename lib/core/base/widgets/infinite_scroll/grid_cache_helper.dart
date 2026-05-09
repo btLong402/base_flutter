@@ -1,6 +1,12 @@
 import 'dart:math' as math;
 
+import 'package:base_flutter/core/base/widgets/grid/grid.dart'
+    show GridLayoutConfig;
+import 'package:base_flutter/core/base/widgets/grid/layout/grid_layout_config.dart'
+    show GridLayoutConfig;
 import 'package:base_flutter/core/base/widgets/grid/layout/layout_strategies.dart';
+import 'package:base_flutter/core/base/widgets/grid/pinterest.dart'
+    show GridLayoutConfig;
 import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_view.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/performance_utils.dart';
 import 'package:flutter/widgets.dart';

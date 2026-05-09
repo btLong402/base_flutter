@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:base_flutter/core/base/widgets/custom_gallery_widget/media_viewer.dart';
+import 'package:flutter/material.dart';
 
 class FullscreenViewerController extends ChangeNotifier {
   FullscreenViewerController({required this.items, this.initialIndex = 0})
