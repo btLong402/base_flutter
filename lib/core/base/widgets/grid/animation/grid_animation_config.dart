@@ -142,7 +142,6 @@ class GridAnimationConfig {
     );
   }
 
-
   const GridAnimationConfig._(this._builder);
 
   final GridItemAnimationBuilder _builder;

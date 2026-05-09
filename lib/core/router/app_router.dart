@@ -1,116 +1,67 @@
-import 'package:base_flutter/core/base/config/environment.dart';
+import 'package:base_flutter/core/base/widgets/toast/toast_notification.dart';
+import 'package:base_flutter/features/home/presentation/pages/home_page.dart';
+import 'package:base_flutter/features/main/presentation/main_shell_page.dart';
+import 'package:base_flutter/features/search/presentation/search_page.dart';
+import 'package:base_flutter/features/settings/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+final shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'home');
+final shellNavigatorSearchKey = GlobalKey<NavigatorState>(debugLabel: 'search');
+final shellNavigatorSettingsKey = GlobalKey<NavigatorState>(
+  debugLabel: 'settings',
+);
 
 class AppRoutes {
-  static const String initial = '/';
+  static const String home = '/';
+  static const String search = '/search';
+  static const String settings = '/settings';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // Link ToastController to global navigator key
+  ToastController.instance.navigatorKey = rootNavigatorKey;
+
   return GoRouter(
-    navigatorKey: navigatorKey,
-    initialLocation: AppRoutes.initial,
+    navigatorKey: rootNavigatorKey,
+    initialLocation: AppRoutes.home,
     routes: [
-      GoRoute(
-        path: AppRoutes.initial,
-        builder: (context, state) => const _InitialScreen(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellPage(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: shellNavigatorHomeKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: shellNavigatorSearchKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.search,
+                builder: (context, state) => const SearchPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: shellNavigatorSettingsKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.settings,
+                builder: (context, state) => const SettingsPage(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );
 });
-
-class _InitialScreen extends StatelessWidget {
-  const _InitialScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    final env = EnvironmentConfig.current;
-
-    return Scaffold(
-      appBar: AppBar(title: Text(env.name.toUpperCase())),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.auto_awesome,
-              size: 80.r,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            SizedBox(height: 24.h),
-            Text(
-              'Base App Professional',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 28.sp,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'Flavor: ${env.flavor.name.toUpperCase()}',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            SizedBox(height: 32.h),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 32.w),
-              child: Padding(
-                padding: EdgeInsets.all(16.r),
-                child: Column(
-                  children: [
-                    _InfoRow(label: 'Base URL', value: env.baseUrl),
-                    Divider(height: 24.h),
-                    const _InfoRow(
-                      label: 'Responsive',
-                      value: 'ScreenUtil Initialized',
-                    ),
-                    Divider(height: 24.h),
-                    const _InfoRow(
-                      label: 'Navigation',
-                      value: 'GoRouter (Riverpod)',
-                    ),
-                    Divider(height: 24.h),
-                    const _InfoRow(label: 'Theme', value: 'Dynamic Switching'),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 13.sp,
-            color: Theme.of(context).colorScheme.outline,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
-        ),
-      ],
-    );
-  }
-}

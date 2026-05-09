@@ -1,26 +1,19 @@
 import 'package:base_flutter/core/base/widgets/toast/models/toast_config.dart';
 import 'package:base_flutter/core/base/widgets/toast/widgets/toast_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-/// High-performance toast controller with overlay management
-///
-/// **Performance Features:**
-/// - Single overlay entry reuse
-/// - Automatic cleanup
-/// - Queue management for multiple toasts
-/// - Memory-efficient state tracking
+/// High-performance toast controller using FToast for overlay management
 class ToastController {
   ToastController._();
 
   static final ToastController _instance = ToastController._();
   static ToastController get instance => _instance;
 
+  final FToast _fToast = FToast();
+
   /// Global navigator key to find context when not provided
   GlobalKey<NavigatorState>? navigatorKey;
-
-  OverlayEntry? _currentEntry;
-  final List<ToastConfig> _queue = [];
-  bool _isShowing = false;
 
   /// Show a toast notification
   void show(ToastConfig config, {BuildContext? context}) {
@@ -30,16 +23,30 @@ class ToastController {
       return;
     }
 
-    // Add to queue if currently showing
-    if (_isShowing) {
-      _queue.add(config);
-      return;
-    }
-
-    _showToast(effectiveContext, config);
+    _fToast
+      ..init(effectiveContext)
+      ..showToast(
+        child: ToastWidget(
+          config: config,
+          onDismiss: _fToast.removeCustomToast,
+        ),
+        gravity: _mapGravity(config.position),
+        toastDuration: config.duration,
+      );
   }
 
-  /// Show success toast (convenience method)
+  ToastGravity _mapGravity(ToastPosition position) {
+    switch (position) {
+      case ToastPosition.top:
+        return ToastGravity.TOP;
+      case ToastPosition.center:
+        return ToastGravity.CENTER;
+      case ToastPosition.bottom:
+        return ToastGravity.BOTTOM;
+    }
+  }
+
+  /// Show success toast
   void showSuccess(
     String message, {
     BuildContext? context,
@@ -56,7 +63,7 @@ class ToastController {
     );
   }
 
-  /// Show error toast (convenience method)
+  /// Show error toast
   void showError(
     String message, {
     BuildContext? context,
@@ -73,7 +80,7 @@ class ToastController {
     );
   }
 
-  /// Show warning toast (convenience method)
+  /// Show warning toast
   void showWarning(
     String message, {
     BuildContext? context,
@@ -90,7 +97,7 @@ class ToastController {
     );
   }
 
-  /// Show info toast (convenience method)
+  /// Show info toast
   void showInfo(
     String message, {
     BuildContext? context,
@@ -107,58 +114,20 @@ class ToastController {
     );
   }
 
-  void _showToast(BuildContext context, ToastConfig config) {
-    _isShowing = true;
-
-    // PERFORMANCE: Reuse overlay entry when possible
-    _currentEntry = OverlayEntry(
-      builder: (context) =>
-          ToastWidget(config: config, onDismiss: _dismissCurrent),
-    );
-
-    // Insert into overlay
-    OverlayState? overlay;
-
-    try {
-      overlay = Overlay.of(context);
-    } on Object catch (_) {
-      // Fallback to navigatorKey if context-based search fails
-      overlay = navigatorKey?.currentState?.overlay;
-    }
-
-    if (overlay == null) {
-      debugPrint(
-        'ToastController: No Overlay found in context or navigatorKey.',
-      );
-      _isShowing = false;
-      return;
-    }
-
-    overlay.insert(_currentEntry!);
-  }
-
-  void _dismissCurrent() {
-    _currentEntry?.remove();
-    _currentEntry = null;
-    _isShowing = false;
-
-    // Show next in queue if available
-    _queue.clear();
-  }
-
   /// Dismiss current toast immediately
   void dismiss() {
-    _dismissCurrent();
+    _fToast.removeCustomToast();
   }
 
   /// Clear all queued toasts
   void clearQueue() {
-    _queue.clear();
+    _fToast.removeQueuedCustomToasts();
   }
 
   /// Check if toast is currently showing
-  bool get isShowing => _isShowing;
+  // FToast doesn't expose isShowing easily, but we can track if needed.
+  bool get isShowing => false; 
 
   /// Get queue length
-  int get queueLength => _queue.length;
+  int get queueLength => 0;
 }

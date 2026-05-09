@@ -301,78 +301,72 @@ class _ToastWidgetState extends State<ToastWidget>
     // PERFORMANCE: Calculate offset direction based on position
     final offsetDirection = config.position == ToastPosition.top ? -1.0 : 1.0;
 
-    return Positioned.fill(
-      child: Align(
-        alignment: config.position.alignment,
-        child: Padding(
-          padding: config.position.edgeInsets(
-            config.verticalOffset,
-            config.horizontalPadding,
-          ),
-          child: GestureDetector(
-            // PERFORMANCE: Enable swipe-to-dismiss with pan gestures
-            onPanStart: widget.config.dismissible ? _handlePanStart : null,
-            onPanUpdate: widget.config.dismissible ? _handlePanUpdate : null,
-            onPanEnd: widget.config.dismissible ? _handlePanEnd : null,
-            onPanCancel: widget.config.dismissible ? _handlePanCancel : null,
-            // Tap to dismiss
-            onTap: widget.config.dismissible
-                ? () async {
-                    if (!_isExiting) await _dismiss();
-                  }
-                : null,
-            child: AnimatedBuilder(
-              animation: _slideAnimation,
-              // PERFORMANCE: Child parameter prevents rebuilding content
-              child: ToastBody(
-                config: config,
-                onDismiss: widget.config.dismissible ? _dismiss : null,
-                onAction: config.action,
-              ),
-              builder: (context, child) {
-                // Calculate slide offset based on animation progress
-                final slideValue = _slideAnimation.value;
-                final fadeValue = _fadeAnimation.value;
-                final scaleValue = _scaleAnimation.value;
-
-                // Entrance/exit animation offset
-                final animationYOffset =
-                    (1 - slideValue) * 100 * offsetDirection;
-
-                // Combined offset with drag
-                final totalOffsetX = _dragOffsetX * slideValue;
-                final totalOffsetY =
-                    animationYOffset + (_dragOffsetY * slideValue);
-
-                // Calculate rotation based on horizontal drag
-                final rotation = (_dragOffsetX / 500) * 0.05;
-
-                // Apply slight scale down when dragging for visual feedback
-                final dragScale = _isDragging ? 0.98 : 1.0;
-                final finalScale = scaleValue * dragScale;
-
-                // Calculate opacity with clamping to prevent invalid values
-                // As user drags, opacity reduces based on drag distance
-                final dragOpacityFactor = (1 - (_dragOffsetX.abs() / 300))
-                    .clamp(0.0, 1.0);
-                final finalOpacity = (fadeValue * dragOpacityFactor).clamp(
-                  0.0,
-                  1.0,
-                );
-
-                // PERFORMANCE: Use Transform for GPU-accelerated animations
-                return Transform.translate(
-                  offset: Offset(totalOffsetX, totalOffsetY),
-                  child: Transform.rotate(
-                    angle: rotation,
-                    child: Transform.scale(
-                      scale: finalScale,
-                      child: Opacity(opacity: finalOpacity, child: child),
-                    ),
-                  ),
-                );
-              },
+    return Align(
+      alignment: config.position.alignment,
+      child: Padding(
+        padding: config.position.edgeInsets(
+          config.verticalOffset,
+          config.horizontalPadding,
+        ),
+        child: GestureDetector(
+          // PERFORMANCE: Enable swipe-to-dismiss with pan gestures
+          onPanStart: widget.config.dismissible ? _handlePanStart : null,
+          onPanUpdate: widget.config.dismissible ? _handlePanUpdate : null,
+          onPanEnd: widget.config.dismissible ? _handlePanEnd : null,
+          onPanCancel: widget.config.dismissible ? _handlePanCancel : null,
+          // Tap to dismiss
+          onTap: widget.config.dismissible
+              ? () async {
+                  if (!_isExiting) await _dismiss();
+                }
+              : null,
+          child: AnimatedBuilder(
+            animation: _slideAnimation,
+            // PERFORMANCE: Child parameter prevents rebuilding content
+            child: ToastBody(
+              config: config,
+              onDismiss: widget.config.dismissible ? _dismiss : null,
+              onAction: config.action,
             ),
+            builder: (context, child) {
+              // Calculate slide offset based on animation progress
+              final slideValue = _slideAnimation.value;
+              final fadeValue = _fadeAnimation.value;
+              final scaleValue = _scaleAnimation.value;
+
+              // Entrance/exit animation offset
+              final animationYOffset = (1 - slideValue) * 100 * offsetDirection;
+
+              // Combined offset with drag
+              final totalOffsetX = _dragOffsetX * slideValue;
+              final totalOffsetY = animationYOffset + (_dragOffsetY * slideValue);
+
+              // Calculate rotation based on horizontal drag
+              final rotation = (_dragOffsetX / 500) * 0.05;
+
+              // Apply slight scale down when dragging for visual feedback
+              final dragScale = _isDragging ? 0.98 : 1.0;
+              final finalScale = scaleValue * dragScale;
+
+              // Calculate opacity with clamping to prevent invalid values
+              // As user drags, opacity reduces based on drag distance
+              final dragOpacityFactor =
+                  (1 - (_dragOffsetX.abs() / 300)).clamp(0.0, 1.0);
+              final finalOpacity =
+                  (fadeValue * dragOpacityFactor).clamp(0.0, 1.0);
+
+              // PERFORMANCE: Use Transform for GPU-accelerated animations
+              return Transform.translate(
+                offset: Offset(totalOffsetX, totalOffsetY),
+                child: Transform.rotate(
+                  angle: rotation,
+                  child: Transform.scale(
+                    scale: finalScale,
+                    child: Opacity(opacity: finalOpacity, child: child),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

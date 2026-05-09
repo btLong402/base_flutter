@@ -1,9 +1,6 @@
 import 'dart:async';
 
-
 import 'package:flutter/widgets.dart';
-
-
 
 /// Disappearing animation for items being removed from the grid.
 ///
