@@ -13,14 +13,15 @@ class BaseApp extends ConsumerWidget {
     final env = EnvironmentConfig.current;
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
-    final lightTheme = ref.watch(lightThemeProvider);
-    final darkTheme = ref.watch(darkThemeProvider);
 
     return ScreenUtilInit(
       designSize: const Size(375, 812), // Standard design size
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+        final lightTheme = ref.watch(lightThemeProvider);
+        final darkTheme = ref.watch(darkThemeProvider);
+
         return MaterialApp.router(
           title: env.name,
           debugShowCheckedModeBanner: env.isDevelopment,
