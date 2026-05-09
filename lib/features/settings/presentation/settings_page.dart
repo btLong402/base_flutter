@@ -40,9 +40,13 @@ class SettingsPage extends HookConsumerWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.check_circle_outline, color: Colors.green),
+                  leading: const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                  ),
                   title: const Text('Success Toast'),
-                  onTap: () => ToastService.success('Task completed successfully!'),
+                  onTap: () =>
+                      ToastService.success('Task completed successfully!'),
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -54,7 +58,8 @@ class SettingsPage extends HookConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.info_outline, color: Colors.blue),
                   title: const Text('Info Toast'),
-                  onTap: () => ToastService.info('This is an informative message.'),
+                  onTap: () =>
+                      ToastService.info('This is an informative message.'),
                 ),
               ],
             ),

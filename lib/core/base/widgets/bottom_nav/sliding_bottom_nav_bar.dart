@@ -16,7 +16,7 @@ class SlidingBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Theme-aware colors
     final backgroundColor = isDark ? AppColors.slate950 : Colors.white;
     final shadowColor = isDark ? Colors.black : AppColors.slate200;
@@ -43,7 +43,8 @@ class SlidingBottomNavigationBar extends StatelessWidget {
             duration: const Duration(milliseconds: 350),
             curve: Curves.easeOutBack,
             // Calculate horizontal center for each of the 3 items
-            left: (selectedIndex * (MediaQuery.of(context).size.width / 3)) +
+            left:
+                (selectedIndex * (MediaQuery.of(context).size.width / 3)) +
                 (MediaQuery.of(context).size.width / 6) -
                 28.w, // Half of pill width (56.w / 2 = 28.w)
             top: 8.h, // Precisely align with the icon's vertical position

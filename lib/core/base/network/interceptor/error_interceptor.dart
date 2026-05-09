@@ -5,13 +5,15 @@ import 'package:dio/dio.dart';
 
 /// Error interceptor to handle errors globally
 class ErrorInterceptor extends Interceptor {
-
   ErrorInterceptor(this._cryptoService, this._dio);
   final CryptoService _cryptoService;
   final Dio _dio;
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // 1. Map error message
     var message = 'Đã có lỗi xảy ra, vui lòng thử lại sau.';
 
@@ -27,7 +29,7 @@ class ErrorInterceptor extends Interceptor {
         // FORCE ROTATION LOGIC
         try {
           await _cryptoService.rotateKey();
-          
+
           // Retry the request with the new key
           final response = await _retry(err.requestOptions);
           return handler.resolve(response);

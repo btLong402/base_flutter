@@ -102,7 +102,8 @@ class EnvironmentConfig {
     final webUrl = dotenv.maybeGet(_webUrlKey) ?? _defaultWebUrl;
     final enableLogging = _parseBool(dotenv.maybeGet(_loggingKey)) ?? true;
     final enableCaching = _parseBool(dotenv.maybeGet(_cachingKey)) ?? true;
-    final rsaPublicKey = dotenv.maybeGet(_rsaPublicKeyKey) ?? AppConstants.serverRsaPublicKey;
+    final rsaPublicKey =
+        dotenv.maybeGet(_rsaPublicKeyKey) ?? AppConstants.serverRsaPublicKey;
     final environmentName = dotenv.maybeGet(_envKey) ?? resolvedFlavor.name;
 
     _instance = EnvironmentConfig._(

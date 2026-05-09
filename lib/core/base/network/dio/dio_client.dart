@@ -2,6 +2,7 @@ import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/constants/app_constants.dart';
 import 'package:base_flutter/core/base/network/cookies/app_cookie_manager.dart';
 import 'package:base_flutter/core/base/network/crypto/crypto_service.dart';
+import 'package:base_flutter/core/base/network/dio/app_background_transformer.dart';
 import 'package:base_flutter/core/base/network/interceptor/cryptography_interceptor.dart';
 import 'package:base_flutter/core/base/network/interceptor/error_interceptor.dart';
 import 'package:base_flutter/core/base/storage/token_storage.dart';
@@ -36,6 +37,7 @@ class DioClient {
         headers: {'Accept': 'application/json'},
       ),
     );
+    _dio.transformer = AppBackgroundTransformer();
     _setupInterceptors();
   }
   late final Dio _dio;

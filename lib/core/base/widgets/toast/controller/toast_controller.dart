@@ -126,7 +126,7 @@ class ToastController {
 
   /// Check if toast is currently showing
   // FToast doesn't expose isShowing easily, but we can track if needed.
-  bool get isShowing => false; 
+  bool get isShowing => false;
 
   /// Get queue length
   int get queueLength => 0;

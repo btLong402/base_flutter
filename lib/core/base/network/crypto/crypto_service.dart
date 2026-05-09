@@ -7,7 +7,10 @@ import 'package:pointycastle/asymmetric/api.dart';
 abstract class CryptoService {
   Future<String> encrypt(String plainText, {Key? key, IV? iv});
   Future<String> decrypt(String cipherText, {Key? key, IV? iv});
-  Future<({String payload, String encryptedKey})> encryptHybrid(String plainText, {String? publicKey});
+  Future<({String payload, String encryptedKey})> encryptHybrid(
+    String plainText, {
+    String? publicKey,
+  });
   Future<void> rotateKey();
 }
 
@@ -28,12 +31,14 @@ class AesCryptoService implements CryptoService {
     if (storedKey != null && storedIv != null) {
       _key = Key.fromBase64(storedKey);
       _iv = IV.fromBase64(storedIv);
-      
+
       // Automatic rotation check (e.g., 30 days)
-      final createdAtStr = await _secureStorage.read(key: AppConstants.cryptoKeyCreatedAt);
+      final createdAtStr = await _secureStorage.read(
+        key: AppConstants.cryptoKeyCreatedAt,
+      );
       if (createdAtStr != null) {
         final createdAt = DateTime.tryParse(createdAtStr);
-        if (createdAt != null && 
+        if (createdAt != null &&
             DateTime.now().difference(createdAt).inDays >= 30) {
           await rotateKey();
         }
@@ -47,11 +52,17 @@ class AesCryptoService implements CryptoService {
   Future<void> rotateKey() async {
     _key = Key.fromSecureRandom(32);
     _iv = IV.fromSecureRandom(16);
-    
-    await _secureStorage.write(key: AppConstants.cryptoAesKey, value: _key!.base64);
-    await _secureStorage.write(key: AppConstants.cryptoAesIv, value: _iv!.base64);
+
     await _secureStorage.write(
-      key: AppConstants.cryptoKeyCreatedAt, 
+      key: AppConstants.cryptoAesKey,
+      value: _key!.base64,
+    );
+    await _secureStorage.write(
+      key: AppConstants.cryptoAesIv,
+      value: _iv!.base64,
+    );
+    await _secureStorage.write(
+      key: AppConstants.cryptoKeyCreatedAt,
       value: DateTime.now().toIso8601String(),
     );
   }
@@ -77,7 +88,10 @@ class AesCryptoService implements CryptoService {
   }
 
   @override
-  Future<({String payload, String encryptedKey})> encryptHybrid(String plainText, {String? publicKey}) async {
+  Future<({String payload, String encryptedKey})> encryptHybrid(
+    String plainText, {
+    String? publicKey,
+  }) async {
     // 1. Generate fresh AES Key and IV for this request
     final aesKey = Key.fromSecureRandom(32);
     final aesIv = IV.fromSecureRandom(16);
@@ -87,7 +101,7 @@ class AesCryptoService implements CryptoService {
 
     // 3. Encrypt AES Key + IV using Server's RSA Public Key
     final keyPackage = '${aesKey.base64}:${aesIv.base64}';
-    
+
     final rsaKey = publicKey ?? AppConstants.serverRsaPublicKey;
     final rsaEncrypter = Encrypter(RSA(publicKey: _parsePublicKey(rsaKey)));
     final encryptedKey = rsaEncrypter.encrypt(keyPackage).base64;

@@ -339,7 +339,8 @@ class _ToastWidgetState extends State<ToastWidget>
 
               // Combined offset with drag
               final totalOffsetX = _dragOffsetX * slideValue;
-              final totalOffsetY = animationYOffset + (_dragOffsetY * slideValue);
+              final totalOffsetY =
+                  animationYOffset + (_dragOffsetY * slideValue);
 
               // Calculate rotation based on horizontal drag
               final rotation = (_dragOffsetX / 500) * 0.05;
@@ -350,10 +351,14 @@ class _ToastWidgetState extends State<ToastWidget>
 
               // Calculate opacity with clamping to prevent invalid values
               // As user drags, opacity reduces based on drag distance
-              final dragOpacityFactor =
-                  (1 - (_dragOffsetX.abs() / 300)).clamp(0.0, 1.0);
-              final finalOpacity =
-                  (fadeValue * dragOpacityFactor).clamp(0.0, 1.0);
+              final dragOpacityFactor = (1 - (_dragOffsetX.abs() / 300)).clamp(
+                0.0,
+                1.0,
+              );
+              final finalOpacity = (fadeValue * dragOpacityFactor).clamp(
+                0.0,
+                1.0,
+              );
 
               // PERFORMANCE: Use Transform for GPU-accelerated animations
               return Transform.translate(
