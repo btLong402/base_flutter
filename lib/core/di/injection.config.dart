@@ -39,10 +39,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final coreModule = _$CoreModule();
-    await gh.factoryAsync<_i420.AppCookieManager>(
-      () => coreModule.cookieManager,
-      preResolve: true,
-    );
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => coreModule.sharedPreferences,
       preResolve: true,
@@ -54,9 +50,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i152.LocalAuthentication>(
       () => coreModule.localAuthentication,
-    );
-    gh.lazySingleton<_i628.TokenStorage>(
-      () => coreModule.tokenStorage(gh<_i420.AppCookieManager>()),
     );
     gh.lazySingleton<_i275.BiometricService>(
       () => _i275.BiometricService(
@@ -73,11 +66,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i337.CryptoService>(
       () => _i337.AesCryptoService(gh<_i851.SecureStorage>()),
     );
+    await gh.factoryAsync<_i420.AppCookieManager>(
+      () => coreModule.cookieManager(gh<_i851.SecureStorage>()),
+      preResolve: true,
+    );
     gh.factory<_i424.CryptographyInterceptor>(
       () => _i424.CryptographyInterceptor(
         gh<_i337.CryptoService>(),
         gh<_i230.AppEnvironment>(),
       ),
+    );
+    gh.lazySingleton<_i628.TokenStorage>(
+      () => coreModule.tokenStorage(gh<_i420.AppCookieManager>()),
     );
     gh.lazySingleton<_i778.DioClient>(
       () => coreModule.dioClient(

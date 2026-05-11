@@ -1,3 +1,5 @@
+import 'package:base_flutter/core/base/theme/app_colors.dart';
+import 'package:base_flutter/core/base/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -15,11 +17,13 @@ class BoxShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.slate800 : AppColors.slate200,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
@@ -34,24 +38,31 @@ class ListTileShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppDimensions.md,
+        vertical: AppDimensions.vmd,
+      ),
       child: Row(
         children: [
           if (hasAvatar) ...[
-            const BoxShimmer(width: 48, height: 48, borderRadius: 24),
-            const Gap(12),
+            BoxShimmer(
+              width: 48,
+              height: 48,
+              borderRadius: AppDimensions.rxl,
+            ),
+            Gap(AppDimensions.md),
           ],
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BoxShimmer(width: 150, height: 16),
-                Gap(8),
-                BoxShimmer(width: 100, height: 12),
+                BoxShimmer(width: 150, height: AppDimensions.vmd),
+                Gap(AppDimensions.vsm),
+                BoxShimmer(width: 100, height: AppDimensions.vsm + 4),
               ],
             ),
           ),
-          const BoxShimmer(width: 40, height: 12),
+          BoxShimmer(width: 40, height: AppDimensions.vsm + 4),
         ],
       ),
     );

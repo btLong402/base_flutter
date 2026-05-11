@@ -1,9 +1,9 @@
-import 'dart:io';
 
 import 'package:base_flutter/core/base/constants/app_constants.dart';
+import 'package:base_flutter/core/base/network/cookies/secure_cookie_storage.dart';
+import 'package:base_flutter/core/base/storage/secure_storage.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart' as dio_cookie;
-import 'package:path_provider/path_provider.dart';
 
 /// Centralized cookie manager for handling session and token cookies.
 class AppCookieManager {
@@ -14,18 +14,12 @@ class AppCookieManager {
   late final dio_cookie.CookieManager _dioInterceptor =
       dio_cookie.CookieManager(_cookieJar);
 
-  /// Factory method to create and initialize a persistent cookie jar.
-  static Future<AppCookieManager> create({required Uri baseUri}) async {
-    final directory = await getApplicationSupportDirectory();
-    final sanitizedHost = baseUri.host.isEmpty
-        ? 'default'
-        : baseUri.host.replaceAll(':', '_');
-    final cookieDir = Directory('${directory.path}/cookies/$sanitizedHost');
-    if (!cookieDir.existsSync()) {
-      cookieDir.createSync(recursive: true);
-    }
-
-    final jar = PersistCookieJar(storage: FileStorage(cookieDir.path));
+  /// Factory method to create and initialize a persistent cookie jar with secure storage.
+  static Future<AppCookieManager> create({
+    required Uri baseUri,
+    required SecureStorage secureStorage,
+  }) async {
+    final jar = PersistCookieJar(storage: SecureCookieStorage(secureStorage));
     return AppCookieManager._(jar, baseUri);
   }
 

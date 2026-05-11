@@ -3,6 +3,7 @@ import 'package:base_flutter/core/base/network/cookies/app_cookie_manager.dart';
 import 'package:base_flutter/core/base/network/crypto/crypto_service.dart';
 import 'package:base_flutter/core/base/network/dio/dio_client.dart';
 import 'package:base_flutter/core/base/network/interceptor/cryptography_interceptor.dart';
+import 'package:base_flutter/core/base/storage/secure_storage.dart';
 import 'package:base_flutter/core/base/storage/token_storage.dart';
 import 'package:base_flutter/core/base/storage/user_preferences.dart';
 import 'package:dio/dio.dart';
@@ -18,10 +19,13 @@ abstract class CoreModule {
   @lazySingleton
   AppEnvironment get environment => EnvironmentConfig.current;
 
-  /// Provide DioClient instance
+  /// Provide AppCookieManager instance
   @preResolve
-  Future<AppCookieManager> get cookieManager async {
-    return AppCookieManager.create(baseUri: EnvironmentConfig.current.baseUri);
+  Future<AppCookieManager> cookieManager(SecureStorage secureStorage) async {
+    return AppCookieManager.create(
+      baseUri: EnvironmentConfig.current.baseUri,
+      secureStorage: secureStorage,
+    );
   }
 
   /// Provide SharedPreferences instance

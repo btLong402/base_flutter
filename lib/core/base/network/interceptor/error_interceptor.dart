@@ -14,7 +14,33 @@ class ErrorInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    // 1. Map error message
+    // 1. Check for retry conditions (Network issues or Server 5xx)
+    final isRetryable = err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.receiveTimeout ||
+        err.type == DioExceptionType.connectionError ||
+        (err.response?.statusCode != null && err.response!.statusCode! >= 500);
+
+    if (isRetryable) {
+      final extra = err.requestOptions.extra;
+      final retryCount = extra['retry_count'] as int? ?? 0;
+      if (retryCount < 3) {
+        final nextRetry = retryCount + 1;
+        extra['retry_count'] = nextRetry;
+
+        // Exponential backoff: 1s, 2s, 4s
+        final delay = Duration(seconds: nextRetry * nextRetry);
+        await Future<void>.delayed(delay);
+
+        try {
+          final response = await _retry(err.requestOptions);
+          return handler.resolve(response);
+        } on Object catch (_) {
+          // If retry fails, continue to global error handling
+        }
+      }
+    }
+
+    // 2. Map error message
     var message = 'Đã có lỗi xảy ra, vui lòng thử lại sau.';
 
     if (err.type == DioExceptionType.connectionTimeout ||
@@ -44,7 +70,7 @@ class ErrorInterceptor extends Interceptor {
       }
     }
 
-    // 2. Show global toast
+    // 3. Show global toast
     ToastService.error(message);
 
     // Pass the error to the next handler
