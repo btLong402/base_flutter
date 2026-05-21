@@ -20,4 +20,9 @@ class CustomImageSource {
   final CustomImageSourceType type;
   final String path;
   final File? file;
+
+  bool get isSvg {
+    final lowerPath = path.toLowerCase();
+    return lowerPath.endsWith('.svg') || lowerPath.contains('.svg?');
+  }
 }

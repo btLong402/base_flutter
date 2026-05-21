@@ -77,7 +77,15 @@ class DioClient {
     // Logger interceptor (should be after cache to log actual requests)
     if (enableLogging) {
       _dio.interceptors.add(
-        PrettyDioLogger(requestHeader: true, requestBody: true),
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
       );
     }
 

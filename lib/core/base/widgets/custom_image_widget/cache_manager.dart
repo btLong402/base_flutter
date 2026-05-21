@@ -16,4 +16,8 @@ class CustomImageCacheManager {
   static Future<void> clearCache() async {
     await instance.emptyCache();
   }
+
+  static Future<void> evictImage(String url) async {
+    await instance.removeFile(url);
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:base_flutter/core/base/widgets/custom_image_widget/cache_manager.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomImageWidget extends StatelessWidget {
@@ -32,30 +34,60 @@ class CustomImageWidget extends StatelessWidget {
 
     switch (source.type) {
       case CustomImageSourceType.network:
-        image = CachedNetworkImage(
-          imageUrl: source.path,
-          width: width,
-          height: height,
-          fit: fit,
-          cacheManager: CustomImageCacheManager.instance,
-          placeholder: (context, url) => placeholder ?? _buildPlaceholder(),
-          errorWidget: (context, url, error) => errorWidget ?? _buildError(),
-        );
+        if (source.isSvg) {
+          image = CachedNetworkSVGImage(
+            source.path,
+            width: width,
+            height: height,
+            fit: fit,
+            placeholder: placeholder ?? _buildPlaceholder(),
+            errorWidget: errorWidget ?? _buildError(),
+            cacheManager: CustomImageCacheManager.instance,
+          );
+        } else {
+          image = CachedNetworkImage(
+            imageUrl: source.path,
+            width: width,
+            height: height,
+            fit: fit,
+            cacheManager: CustomImageCacheManager.instance,
+            placeholder: (context, url) => placeholder ?? _buildPlaceholder(),
+            errorWidget: (context, url, error) => errorWidget ?? _buildError(),
+          );
+        }
       case CustomImageSourceType.asset:
-        image = Image.asset(
-          source.path,
-          width: width,
-          height: height,
-          fit: fit,
-        );
-      case CustomImageSourceType.file:
-        if (source.file != null) {
-          image = Image.file(
-            source.file!,
+        if (source.isSvg) {
+          image = SvgPicture.asset(
+            source.path,
             width: width,
             height: height,
             fit: fit,
           );
+        } else {
+          image = Image.asset(
+            source.path,
+            width: width,
+            height: height,
+            fit: fit,
+          );
+        }
+      case CustomImageSourceType.file:
+        if (source.file != null) {
+          if (source.isSvg) {
+            image = SvgPicture.file(
+              source.file!,
+              width: width,
+              height: height,
+              fit: fit,
+            );
+          } else {
+            image = Image.file(
+              source.file!,
+              width: width,
+              height: height,
+              fit: fit,
+            );
+          }
         } else {
           image = _buildError();
         }
@@ -88,3 +120,4 @@ class CustomImageWidget extends StatelessWidget {
     );
   }
 }
+
