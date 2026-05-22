@@ -15,7 +15,8 @@ class ErrorInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     // 1. Check for retry conditions (Network issues or Server 5xx)
-    final isRetryable = err.type == DioExceptionType.connectionTimeout ||
+    final isRetryable =
+        err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.receiveTimeout ||
         err.type == DioExceptionType.connectionError ||
         (err.response?.statusCode != null && err.response!.statusCode! >= 500);

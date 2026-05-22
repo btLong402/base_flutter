@@ -120,4 +120,3 @@ class CustomImageWidget extends StatelessWidget {
     );
   }
 }
-

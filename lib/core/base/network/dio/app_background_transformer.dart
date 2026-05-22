@@ -24,8 +24,10 @@ class AppBackgroundTransformer extends BackgroundTransformer {
     ResponseBody responseBody,
   ) async {
     // 1. Read the response body using BackgroundTransformer's logic
-    final dynamic transformed =
-        await super.transformResponse(options, responseBody);
+    final dynamic transformed = await super.transformResponse(
+      options,
+      responseBody,
+    );
 
     // 2. If it's a JSON response and a String, check if we should decode in background
     if (isEnabled &&

@@ -60,6 +60,7 @@ dependencies:
   logger: ^2.7.0
   mobile_scanner: ^7.2.0
   package_info_plus: ^9.0.1
+  path_drawing: ^1.0.1
   path_provider: ^2.1.5
   photo_manager: ^3.9.0
   pointycastle: ^3.9.1

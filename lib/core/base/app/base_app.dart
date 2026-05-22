@@ -1,5 +1,6 @@
 import 'package:base_flutter/core/base/config/environment.dart';
 import 'package:base_flutter/core/base/theme/theme_provider.dart';
+import 'package:base_flutter/core/base/widgets/app_scale_builder.dart';
 import 'package:base_flutter/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,10 +16,7 @@ class BaseApp extends HookConsumerWidget {
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
 
-    return ScreenUtilInit(
-      designSize: const Size(375, 812), // Standard design size
-      minTextAdapt: true,
-      splitScreenMode: true,
+    return AppScaleBuilder(
       builder: (context, child) {
         final lightTheme = ref.watch(lightThemeProvider);
         final darkTheme = ref.watch(darkThemeProvider);
