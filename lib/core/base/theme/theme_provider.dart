@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Theme mode notifier
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.system) {
+class ThemeModeNotifier extends Notifier<ThemeMode> {
+  @override
+  ThemeMode build() {
     unawaited(_loadTheme());
+    return ThemeMode.system;
   }
 
   /// Load theme from storage
@@ -57,8 +59,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
 }
 
 /// Theme mode provider
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
-  (ref) => ThemeModeNotifier(),
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
+  ThemeModeNotifier.new,
 );
 
 /// Light theme provider

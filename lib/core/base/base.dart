@@ -41,3 +41,83 @@ export 'widgets/toast/toast_notification.dart';
 ///
 /// // Now you can use all base classes, themes, and common widgets
 /// ```
+///
+/// ### Architecture Showcase:
+/// 
+/// Below is a complete guide showing how all Base classes tie together in a Clean Architecture flow:
+/// 
+/// **1. Data Layer (Repository Implementation)**
+/// ```dart
+/// class ProductRepositoryImpl extends BaseRepository implements ProductRepository {
+///   final ProductRemoteDataSource remote;
+///   ProductRepositoryImpl(this.remote);
+/// 
+///   @override
+///   Future<Either<Failure, Product>> getProductDetail(String id) {
+///     // `execute` automatically maps exceptions to appropriate Failures
+///     return execute(() => remote.fetchProduct(id)); 
+///   }
+/// }
+/// ```
+/// 
+/// **2. Domain Layer (UseCase & Params)**
+/// ```dart
+/// class ProductParams extends Params {
+///   final String productId;
+///   const ProductParams(this.productId);
+/// 
+///   @override
+///   List<Object?> get props => [productId];
+/// }
+/// 
+/// class GetProductDetailUseCase implements UseCase<Product, ProductParams> {
+///   final ProductRepository repository;
+///   GetProductDetailUseCase(this.repository);
+/// 
+///   @override
+///   FutureResult<Product> call(ProductParams params) {
+///     return repository.getProductDetail(params.productId);
+///   }
+/// }
+/// ```
+/// 
+/// **3. Presentation Layer (State & Riverpod Notifier)**
+/// ```dart
+/// typedef ProductDetailState = BaseState<Product>;
+/// 
+/// class ProductDetailNotifier extends BaseNotifier<ProductDetailState> {
+///   final GetProductDetailUseCase getProductDetail;
+///   ProductDetailNotifier(this.getProductDetail) : super(const BaseState.initial());
+/// 
+///   Future<void> fetchProduct(String id) async {
+///     await runTask<Product>(
+///       task: getProductDetail(ProductParams(id)),
+///       onLoading: () => state = const BaseState.loading(),
+///       onSuccess: (product) => state = BaseState.success(product),
+///       onError: (message) => state = BaseState.error(message),
+///     );
+///   }
+/// }
+/// ```
+/// 
+/// **4. Presentation Layer (UI Widget)**
+/// ```dart
+/// class ProductDetailPage extends ConsumerWidget {
+///   final String productId;
+///   const ProductDetailPage(this.productId, {super.key});
+/// 
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final detailState = ref.watch(productDetailProvider(productId));
+/// 
+///     return Scaffold(
+///       body: detailState.when(
+///         initial: () => const Center(child: Text('Bắt đầu...')),
+///         loading: () => const Center(child: CircularProgressIndicator()),
+///         success: (product) => ProductDetailWidget(product),
+///         error: (message) => Center(child: Text('Lỗi: $message')),
+///       ),
+///     );
+///   }
+/// }
+/// ```

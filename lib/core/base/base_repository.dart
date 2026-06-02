@@ -7,6 +7,38 @@ import 'package:dio/dio.dart';
 /// Base repository with common error handling logic.
 /// All repository implementations can extend this to get consistent
 /// error handling.
+///
+/// ### Unified Architecture Example (Part 2/5: Repository)
+///
+/// Under this pattern:
+/// - **Part 1: Params (`ProductParams`)** defines the parameters for the UseCase.
+/// - **Part 2: Repository (`ProductRepository`)** defines data fetching.
+/// - **Part 3: UseCase (`GetProductDetailUseCase`)** executes the business logic.
+/// - **Part 4: UI State (`ProductDetailState`)** models the loading lifecycle.
+/// - **Part 5: Notifier (`ProductNotifier`)** coordinates the state update.
+///
+/// **1. Define the repository interface:**
+/// ```dart
+/// abstract class ProductRepository {
+///   Future<Either<Failure, Product>> getProductDetail(String id);
+/// }
+/// ```
+///
+/// **2. Implement the repository by extending [BaseRepository]:**
+/// ```dart
+/// class ProductRepositoryImpl extends BaseRepository implements ProductRepository {
+///   final ProductRemoteDataSource _remoteDataSource;
+///
+///   ProductRepositoryImpl(this._remoteDataSource);
+///
+///   @override
+///   Future<Either<Failure, Product>> getProductDetail(String id) {
+///     // The `execute` method handles Exceptions automatically
+///     // and converts them to appropriate `Failure` types (ServerFailure, NetworkFailure, etc.)
+///     return execute(() => _remoteDataSource.getProduct(id));
+///   }
+/// }
+/// ```
 abstract class BaseRepository {
   /// Execute an async operation with automatic error handling
   /// Converts exceptions to Failures using the Either pattern

@@ -17,12 +17,12 @@ dependencies:
   crypto: ^3.0.6
   encrypt: ^5.0.3
   dartz: ^0.10.1
-  device_info_plus: ^12.4.0
+  device_info_plus: ^13.1.0
   dio: ^5.9.2
   dio_cache_interceptor: ^4.0.6
   dio_cookie_manager: ^3.4.0
   equatable: ^2.0.8
-  file_picker: ^11.0.2
+  file_picker: ^12.0.0-beta.5
   fl_chart: ^1.2.0
   flutter:
     sdk: flutter
@@ -33,7 +33,7 @@ dependencies:
   flutter_local_notifications: ^21.0.0
   flutter_localization: ^0.4.0
   flutter_native_splash: ^2.4.7
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^3.3.1
   flutter_screenutil: ^5.9.3
   flutter_secure_storage: ^10.1.0
   flutter_staggered_animations: ^1.1.1
@@ -49,27 +49,28 @@ dependencies:
   google_fonts: ^8.1.0
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
-  hooks_riverpod: ^2.5.1
+  hooks_riverpod: ^3.3.1
   http_cache_hive_store: ^5.1.0
   image_picker: ^1.2.2
-  injectable: ^2.5.0
+  injectable: ^3.0.0
   intl: ^0.20.2
-  json_annotation: ^4.9.0
+  json_annotation: ^4.12.0
   jwt_decoder: ^2.0.1
   local_auth: ^3.0.1
   logger: ^2.7.0
   mobile_scanner: ^7.2.0
-  package_info_plus: ^9.0.1
+  package_info_plus: ^10.1.0
   path_drawing: ^1.0.1
   path_provider: ^2.1.5
   photo_manager: ^3.9.0
   pointycastle: ^3.9.1
   pretty_dio_logger: ^1.4.0
   retrofit: ^4.9.2
-  share_plus: ^12.0.2
+  share_plus: ^13.1.0
   shared_preferences: ^2.5.5
   shimmer: ^3.0.0
   socket_io_client: ^3.1.4
+  state_notifier: ^1.0.0
   table_calendar: ^3.2.0
   timezone: ^0.11.0
   url_launcher: ^6.3.2
@@ -84,7 +85,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.5
   hive_ce_generator: ^1.11.1
-  injectable_generator: ^2.12.1
+  injectable_generator: ^3.0.2
   intl_utils: ^2.8.14
   json_serializable: ^6.13.1
   mocktail: ^1.0.4

@@ -1,34 +1,31 @@
-/// Base class for use case parameters
-/// Extend this to create type-safe parameters for your use cases
-abstract class Params {
-  const Params();
-}
+import 'package:equatable/equatable.dart';
 
-/// Example usage:
+/// Base class for use case parameters.
+/// Extend this to create type-safe, equatable parameters for your use cases.
+///
+/// ### Unified Architecture Example (Part 1/5: Params)
+///
+/// Under this pattern:
+/// - **Part 1: Params (`ProductParams`)** defines the parameters for the UseCase.
+/// - **Part 2: Repository (`ProductRepository`)** defines data fetching.
+/// - **Part 3: UseCase (`GetProductDetailUseCase`)** executes the business logic.
+/// - **Part 4: UI State (`ProductDetailState`)** models the loading lifecycle.
+/// - **Part 5: Notifier (`ProductNotifier`)** coordinates the state update.
 ///
 /// ```dart
-/// class LoginParams extends Params {
-///   final String email;
-///   final String password;
+/// // Defining parameters for fetching product details
+/// class ProductParams extends Params {
+///   final String productId;
 ///
-///   const LoginParams({
-///     required this.email,
-///     required this.password,
-///   });
+///   const ProductParams({required this.productId});
 ///
 ///   @override
-///   List<Object?> get props => [email, password];
+///   List<Object?> get props => [productId];
 /// }
+/// ```
 ///
-/// class GetUserParams extends Params {
-///   final String userId;
-///
-///   const GetUserParams({required this.userId});
-///
-///   @override
-///   List<Object?> get props => [userId];
-/// }
-///
+/// Other examples:
+/// ```dart
 /// class PaginationParams extends Params {
 ///   final int page;
 ///   final int limit;
@@ -44,3 +41,9 @@ abstract class Params {
 ///   List<Object?> get props => [page, limit, query];
 /// }
 /// ```
+abstract class Params extends Equatable {
+  const Params();
+
+  @override
+  List<Object?> get props => [];
+}
