@@ -20,12 +20,18 @@ import 'package:base_flutter/core/base/network/interceptor/cryptography_intercep
     as _i424;
 import 'package:base_flutter/core/base/services/biometric_service.dart'
     as _i275;
+import 'package:base_flutter/core/base/services/fcm_service.dart' as _i198;
+import 'package:base_flutter/core/base/services/local_noti_service.dart'
+    as _i40;
 import 'package:base_flutter/core/base/services/passkey_service.dart' as _i762;
 import 'package:base_flutter/core/base/storage/secure_storage.dart' as _i851;
 import 'package:base_flutter/core/base/storage/token_storage.dart' as _i628;
 import 'package:base_flutter/core/base/storage/user_preferences.dart' as _i373;
 import 'package:base_flutter/core/di/core_module.dart' as _i586;
 import 'package:dio/dio.dart' as _i361;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -56,6 +62,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i183.PasskeyAuthenticator>(
       () => coreModule.passkeyAuthenticator,
     );
+    gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
+      () => coreModule.flutterLocalNotificationsPlugin,
+    );
+    gh.lazySingleton<_i892.FirebaseMessaging>(
+      () => coreModule.firebaseMessaging,
+    );
     gh.lazySingleton<_i275.BiometricService>(
       () => _i275.BiometricService(
         gh<_i558.FlutterSecureStorage>(),
@@ -74,6 +86,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i337.CryptoService>(
       () => _i337.AesCryptoService(gh<_i851.SecureStorage>()),
     );
+    gh.lazySingleton<_i40.LocalNotificationService>(
+      () => _i40.LocalNotificationService(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+      ),
+    );
     await gh.factoryAsync<_i420.AppCookieManager>(
       () => coreModule.cookieManager(gh<_i851.SecureStorage>()),
       preResolve: true,
@@ -82,6 +99,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i424.CryptographyInterceptor(
         gh<_i337.CryptoService>(),
         gh<_i230.AppEnvironment>(),
+      ),
+    );
+    gh.lazySingleton<_i198.FcmService>(
+      () => _i198.FcmService(
+        gh<_i892.FirebaseMessaging>(),
+        gh<_i40.LocalNotificationService>(),
       ),
     );
     gh.lazySingleton<_i628.TokenStorage>(

@@ -99,7 +99,7 @@ class _AnimatedSearchAppBarState extends State<AnimatedSearchAppBar>
           SizeTransition(
             sizeFactor: _searchBarAnimation,
             axis: Axis.horizontal,
-            axisAlignment: -1,
+            alignment: Alignment.centerLeft,
             child: FadeTransition(
               opacity: _searchBarAnimation,
               child: ValueListenableBuilder<TextEditingValue>(

@@ -1,6 +1,7 @@
 import 'package:base_flutter/core/base/widgets/grid/animation/grid_animation_config.dart';
 import 'package:base_flutter/core/base/widgets/grid/layout/grid_layout_config.dart';
 import 'package:base_flutter/core/base/widgets/grid/widgets/advanced_sliver_grid.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 /// A high-performance scrollable grid that supports multiple layout
@@ -29,7 +30,7 @@ class AdvancedGridView extends BoxScrollView {
     super.primary,
     super.physics,
     super.shrinkWrap,
-    double? cacheExtent,
+    double? scrollCacheExtent,
     super.restorationId,
     this.addRepaintBoundaries,
     this.findChildIndexCallback,
@@ -37,8 +38,14 @@ class AdvancedGridView extends BoxScrollView {
        _animationConfig = animation,
        super(
          padding: padding ?? layout.padding,
-         cacheExtent:
-             cacheExtent ?? layout.cacheExtent ?? layout.prefetchExtent,
+         scrollCacheExtent:
+             (scrollCacheExtent ?? layout.cacheExtent ?? layout.prefetchExtent) != null
+                 ? ScrollCacheExtent.pixels(
+                     scrollCacheExtent ??
+                         layout.cacheExtent ??
+                         layout.prefetchExtent!,
+                   )
+                 : null,
          clipBehavior: clipBehavior ?? Clip.hardEdge,
        );
 

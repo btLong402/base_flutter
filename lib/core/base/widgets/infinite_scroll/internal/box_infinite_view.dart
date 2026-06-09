@@ -4,6 +4,7 @@ import 'package:base_flutter/core/base/widgets/infinite_scroll/pagination_contro
 import 'package:base_flutter/core/base/widgets/infinite_scroll/refresh_controls.dart';
 import 'package:base_flutter/core/base/widgets/infinite_scroll/separator_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class BoxInfiniteView<T> extends StatelessWidget {
   const BoxInfiniteView({
@@ -53,7 +54,7 @@ class BoxInfiniteView<T> extends StatelessWidget {
         controller: effectiveController,
         physics: physics,
         padding: padding,
-        cacheExtent: cacheExtent,
+        scrollCacheExtent: ScrollCacheExtent.pixels(cacheExtent),
         itemExtent: separators.builder == null ? itemExtent : null,
         itemBuilder: (context, index) {
           if (hasFooter && index == totalCount - 1) {
@@ -80,7 +81,7 @@ class BoxInfiniteView<T> extends StatelessWidget {
           controller: effectiveController,
           physics: physics,
           padding: padding,
-          cacheExtent: gridCacheExtent,
+          scrollCacheExtent: gridCacheExtent,
           layout: gridConfig!.layout,
           animation: gridConfig!.animation,
           itemCount: totalCount,
@@ -106,7 +107,7 @@ class BoxInfiniteView<T> extends StatelessWidget {
           controller: effectiveController,
           physics: physics,
           padding: padding,
-          cacheExtent: cacheExtent,
+          scrollCacheExtent: ScrollCacheExtent.pixels(cacheExtent),
           gridDelegate: gridDelegate!,
           itemBuilder: (context, index) {
             if (hasFooter && index == totalCount - 1) {

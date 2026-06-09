@@ -55,7 +55,7 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double maxWidth = constraints.maxWidth;
+        final maxWidth = constraints.maxWidth;
 
         if (maxWidth >= AppBreakpoints.tablet) {
           // Trả về desktop layout nếu có, nếu không thì rớt xuống tablet hoặc mobile

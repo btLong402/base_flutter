@@ -7,6 +7,8 @@ import 'package:base_flutter/core/base/storage/secure_storage.dart';
 import 'package:base_flutter/core/base/storage/token_storage.dart';
 import 'package:base_flutter/core/base/storage/user_preferences.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
@@ -50,6 +52,15 @@ abstract class CoreModule {
   /// Provide PasskeyAuthenticator instance for passkey auth
   @lazySingleton
   PasskeyAuthenticator get passkeyAuthenticator => PasskeyAuthenticator();
+
+  /// Provide FlutterLocalNotificationsPlugin instance for local notifications
+  @lazySingleton
+  FlutterLocalNotificationsPlugin get flutterLocalNotificationsPlugin =>
+      FlutterLocalNotificationsPlugin();
+
+  /// Provide FirebaseMessaging instance for remote push notifications
+  @lazySingleton
+  FirebaseMessaging get firebaseMessaging => FirebaseMessaging.instance;
 
   /// Provide strongly-typed preferences wrapper
   @lazySingleton
