@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:passkeys/authenticator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Core module - registers core dependencies
@@ -45,6 +46,10 @@ abstract class CoreModule {
   /// Provide LocalAuthentication instance for biometric auth
   @lazySingleton
   LocalAuthentication get localAuthentication => LocalAuthentication();
+
+  /// Provide PasskeyAuthenticator instance for passkey auth
+  @lazySingleton
+  PasskeyAuthenticator get passkeyAuthenticator => PasskeyAuthenticator();
 
   /// Provide strongly-typed preferences wrapper
   @lazySingleton

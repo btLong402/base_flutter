@@ -20,6 +20,7 @@ import 'package:base_flutter/core/base/network/interceptor/cryptography_intercep
     as _i424;
 import 'package:base_flutter/core/base/services/biometric_service.dart'
     as _i275;
+import 'package:base_flutter/core/base/services/passkey_service.dart' as _i762;
 import 'package:base_flutter/core/base/storage/secure_storage.dart' as _i851;
 import 'package:base_flutter/core/base/storage/token_storage.dart' as _i628;
 import 'package:base_flutter/core/base/storage/user_preferences.dart' as _i373;
@@ -29,6 +30,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:local_auth/local_auth.dart' as _i152;
+import 'package:passkeys/authenticator.dart' as _i183;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -51,11 +53,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i152.LocalAuthentication>(
       () => coreModule.localAuthentication,
     );
+    gh.lazySingleton<_i183.PasskeyAuthenticator>(
+      () => coreModule.passkeyAuthenticator,
+    );
     gh.lazySingleton<_i275.BiometricService>(
       () => _i275.BiometricService(
         gh<_i558.FlutterSecureStorage>(),
         gh<_i152.LocalAuthentication>(),
       ),
+    );
+    gh.lazySingleton<_i762.PasskeyService>(
+      () => _i762.PasskeyService(gh<_i183.PasskeyAuthenticator>()),
     );
     gh.lazySingleton<_i851.SecureStorage>(
       () => _i851.SecureStorage(gh<_i558.FlutterSecureStorage>()),
