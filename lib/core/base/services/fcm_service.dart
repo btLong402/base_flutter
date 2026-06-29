@@ -1,7 +1,6 @@
 // The @pragma('vm:entry-point') annotation on the background handler
 // causes the Dart analyzer to treat this file as an executable entry point,
 // which triggers false positive warnings that FcmService is unreachable.
-// ignore_for_file: unreachable_from_main
 
 import 'dart:async';
 import 'dart:convert';

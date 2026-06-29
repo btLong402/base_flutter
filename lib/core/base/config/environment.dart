@@ -1,11 +1,13 @@
 import 'dart:developer' as developer;
 
+import 'package:base_flutter/core/base/config/env/env_dev.dart';
+import 'package:base_flutter/core/base/config/env/env_prod.dart';
+import 'package:base_flutter/core/base/config/env/env_staging.dart';
 import 'package:base_flutter/core/base/constants/app_constants.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum AppFlavor { development, staging, production }
 
-/// Represents a resolved environment configuration loaded from .env files.
+/// Represents a resolved environment configuration loaded from Envied configurations.
 class AppEnvironment {
   const AppEnvironment({
     required this.flavor,
@@ -55,15 +57,6 @@ class EnvironmentConfig {
   final AppEnvironment environment;
 
   static const String _envKey = 'APP_ENV';
-  static const String _loggingKey = 'ENABLE_LOGGING';
-  static const String _cachingKey = 'ENABLE_CACHING';
-  static const String _baseUrlKey = 'API_BASE_URL';
-  static const String _webUrlKey = 'WEB_BASE_URL';
-  static const String _rsaPublicKeyKey = 'RSA_PUBLIC_KEY';
-  static const String _defaultWebUrl = 'https://app-base-flutter.com';
-  static const String _filePrefix = 'assets/env/.env';
-  static const String _defaultFile = 'assets/env/.env.development';
-
   static EnvironmentConfig? _instance;
 
   /// Returns the active environment configuration.
@@ -81,11 +74,7 @@ class EnvironmentConfig {
   /// Active environment name.
   static String get name => current.name;
 
-  /// Loads environment variables from the specified [flavor] or [fileName].
-  ///
-  /// If both are omitted the loader attempts to resolve the environment from
-  /// the `APP_ENV` compile-time define. When resolution fails the development
-  /// configuration is used as a fallback.
+  /// Loads environment variables from the specified [flavor] or compile-time config.
   static Future<void> load({AppFlavor? flavor, String? fileName}) async {
     final resolvedFlavor =
         flavor ??
@@ -94,17 +83,36 @@ class EnvironmentConfig {
           orElse: () => AppFlavor.development,
         );
 
-    final resolvedFileName = fileName ?? '$_filePrefix.${resolvedFlavor.name}';
+    final String environmentName;
+    final String baseUrl;
+    final String webUrl;
+    final bool enableLogging;
+    final bool enableCaching;
+    final String rsaPublicKey;
 
-    await _loadDotEnv(resolvedFileName);
-
-    final baseUrl = dotenv.maybeGet(_baseUrlKey) ?? AppConstants.baseUrl;
-    final webUrl = dotenv.maybeGet(_webUrlKey) ?? _defaultWebUrl;
-    final enableLogging = _parseBool(dotenv.maybeGet(_loggingKey)) ?? true;
-    final enableCaching = _parseBool(dotenv.maybeGet(_cachingKey)) ?? true;
-    final rsaPublicKey =
-        dotenv.maybeGet(_rsaPublicKeyKey) ?? AppConstants.serverRsaPublicKey;
-    final environmentName = dotenv.maybeGet(_envKey) ?? resolvedFlavor.name;
+    switch (resolvedFlavor) {
+      case AppFlavor.development:
+        environmentName = EnvDev.appEnv;
+        baseUrl = EnvDev.apiBaseUrl;
+        webUrl = EnvDev.webBaseUrl;
+        enableLogging = _parseBool(EnvDev.enableLogging) ?? true;
+        enableCaching = _parseBool(EnvDev.enableCaching) ?? true;
+        rsaPublicKey = EnvDev.rsaPublicKey ?? AppConstants.serverRsaPublicKey;
+      case AppFlavor.staging:
+        environmentName = EnvStaging.appEnv;
+        baseUrl = EnvStaging.apiBaseUrl;
+        webUrl = EnvStaging.webBaseUrl;
+        enableLogging = _parseBool(EnvStaging.enableLogging) ?? true;
+        enableCaching = _parseBool(EnvStaging.enableCaching) ?? true;
+        rsaPublicKey = EnvStaging.rsaPublicKey ?? AppConstants.serverRsaPublicKey;
+      case AppFlavor.production:
+        environmentName = EnvProd.appEnv;
+        baseUrl = EnvProd.apiBaseUrl;
+        webUrl = EnvProd.webBaseUrl;
+        enableLogging = _parseBool(EnvProd.enableLogging) ?? false;
+        enableCaching = _parseBool(EnvProd.enableCaching) ?? true;
+        rsaPublicKey = EnvProd.rsaPublicKey ?? AppConstants.serverRsaPublicKey;
+    }
 
     _instance = EnvironmentConfig._(
       AppEnvironment(
@@ -119,25 +127,16 @@ class EnvironmentConfig {
     );
 
     developer.log(
-      '┌─── EnvironmentConfig loaded ───\n'
+      '┌─── EnvironmentConfig (Envied) loaded ───\n'
+      '│ flavor:   $resolvedFlavor\n'
       '│ env:      $environmentName\n'
-      '│ file:     $resolvedFileName\n'
       '│ baseUrl:  $baseUrl\n'
       '│ webUrl:   $webUrl\n'
       '│ logging:  $enableLogging\n'
       '│ caching:  $enableCaching\n'
-      '└────────────────────────────────',
+      '└────────────────────────────────────────',
       name: 'ENV',
     );
-  }
-
-  static Future<void> _loadDotEnv(String fileName) async {
-    try {
-      await dotenv.load(fileName: fileName);
-    } catch (_) {
-      if (fileName == _defaultFile) rethrow;
-      await dotenv.load(fileName: _defaultFile);
-    }
   }
 
   static bool? _parseBool(String? value) {
