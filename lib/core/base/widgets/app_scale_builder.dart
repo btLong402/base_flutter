@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Widget base giúp tự động khởi tạo môi trường tính toán scale (kích thước) cho toàn bộ ứng dụng.
-/// Sử dụng package `flutter_screenutil` để tự động scale width, height, font size...
+/// Tự động phát hiện và chuyển đổi thông minh giữa các bản thiết kế Phone & Tablet,
+/// hỗ trợ tự động đảo chiều kích thước khi xoay màn hình (orientation) và tránh nhận diện nhầm Phone xoay ngang thành Tablet.
 ///
 /// **Hướng dẫn sử dụng:**
 /// Bọc widget này ngay bên ngoài `MaterialApp` (hoặc `CupertinoApp`) của bạn:
@@ -15,14 +17,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return AppScaleBuilder(
-///       // designSize mặc định là 375x812 (chuẩn Figma Mobile), bạn có thể đổi nếu cần
-///       designSize: const Size(375, 812),
+///       phoneDesignSize: const Size(375, 812), // Chuẩn Figma Phone
+///       tabletDesignSize: const Size(768, 1024), // Chuẩn Figma Tablet
 ///       builder: (context, child) {
 ///         return MaterialApp(
-///           home: child, // Hoặc dùng route của bạn
+///           home: child,
 ///         );
 ///       },
-///       child: const HomeScreen(), // Khởi tạo trang chủ (tuỳ chọn)
+///       child: const HomeScreen(),
 ///     );
 ///   }
 /// }
@@ -37,21 +39,76 @@ class AppScaleBuilder extends StatelessWidget {
   const AppScaleBuilder({
     required this.builder,
     super.key,
-    this.designSize = const Size(375, 812),
+    this.phoneDesignSize = const Size(375, 812),
+    this.tabletDesignSize = const Size(768, 1024),
+    this.tabletBreakpoint = 600.0,
+    this.adaptOrientation = true,
     this.child,
   });
 
   /// Builder chứa `MaterialApp` hoặc router config của bạn
   final Widget Function(BuildContext context, Widget? child) builder;
 
-  /// Kích thước bản thiết kế gốc (từ Figma/Sketch). Mặc định là 375 x 812.
-  final Size designSize;
+  /// Kích thước bản thiết kế gốc cho điện thoại (Figma Mobile)
+  final Size phoneDesignSize;
+
+  /// Kích thước bản thiết kế gốc cho máy tính bảng (Figma Tablet)
+  final Size tabletDesignSize;
+
+  /// Điểm breakpoint để phân biệt thiết bị dựa trên cạnh ngắn nhất (shortest side).
+  /// Tiêu chuẩn công nghiệp thường là 600 dp.
+  final double tabletBreakpoint;
+
+  /// Tự động hoán đổi chiều rộng và chiều cao của designSize khi thiết bị xoay ngang (Landscape).
+  final bool adaptOrientation;
 
   /// Widget con tuỳ chọn (thường là màn hình trang chủ)
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
+    // 1. Fallback an toàn cho môi trường Testing hoặc khi view chưa gắn kết hoàn toàn
+    final view = View.maybeOf(context) ?? WidgetsBinding.instance.platformDispatcher.implicitView;
+    if (view == null) {
+      return _buildScreenUtil(phoneDesignSize);
+    }
+
+    // 2. Tính toán kích thước logic (dp) từ kích thước vật lý của View
+    final physicalWidth = view.physicalSize.width;
+    final physicalHeight = view.physicalSize.height;
+    final devicePixelRatio = view.devicePixelRatio;
+
+    final width = physicalWidth / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
+    final height = physicalHeight / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
+
+    // 3. Tiêu chuẩn vàng: Sử dụng shortest side để phân biệt Phone & Tablet (sw600dp),
+    // giúp Phone xoay ngang (ví dụ 812x375) vẫn được nhận diện chính xác là Phone.
+    final shortestSide = min(width, height);
+    final isTablet = shortestSide >= tabletBreakpoint;
+
+    // Chọn base size tương ứng với thiết bị
+    final baseSize = isTablet ? tabletDesignSize : phoneDesignSize;
+
+    // 4. Xử lý Orientation thích ứng
+    final Size resolvedDesignSize;
+    if (adaptOrientation && width > height) {
+      // Thiết bị đang ở chế độ xoay ngang (Landscape)
+      // Cấu hình designSize ngang: [Cạnh dài nhất, Cạnh ngắn nhất]
+      final baseShortest = min(baseSize.width, baseSize.height);
+      final baseLongest = max(baseSize.width, baseSize.height);
+      resolvedDesignSize = Size(baseLongest, baseShortest);
+    } else {
+      // Thiết bị đang ở chế độ xoay dọc (Portrait) hoặc vuông
+      // Cấu hình designSize dọc: [Cạnh ngắn nhất, Cạnh dài nhất]
+      final baseShortest = min(baseSize.width, baseSize.height);
+      final baseLongest = max(baseSize.width, baseSize.height);
+      resolvedDesignSize = Size(baseShortest, baseLongest);
+    }
+
+    return _buildScreenUtil(resolvedDesignSize);
+  }
+
+  Widget _buildScreenUtil(Size designSize) {
     return ScreenUtilInit(
       designSize: designSize,
       minTextAdapt: true,
