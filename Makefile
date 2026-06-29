@@ -6,8 +6,14 @@
 # =============================================================================
 
 # Configuration Variables
-FLUTTER_BIN := flutter
-DART_BIN    := dart
+# Auto-detect FVM (Flutter Version Management)
+ifeq ($(wildcard .fvm),)
+  FLUTTER_BIN := flutter
+  DART_BIN    := dart
+else
+  FLUTTER_BIN := fvm flutter
+  DART_BIN    := fvm dart
+endif
 
 # Target Entry Points (Matching lib/_main/ directory structure)
 ENTRY_DEV     := lib/_main/main.dart

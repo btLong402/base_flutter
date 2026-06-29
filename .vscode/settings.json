@@ -8,5 +8,6 @@
     "**/*.g.dart": false,
     "**/*.freezed.dart": false,
     "**/*.gr.dart": false
-  }
+  },
+  "dart.flutterSdkPath": ".fvm/versions/stable"
 }
