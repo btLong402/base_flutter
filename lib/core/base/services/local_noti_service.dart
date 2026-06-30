@@ -25,7 +25,8 @@ class LocalNotificationService {
   // Cấu hình Channel mặc định cho Android
   static const _defaultChannelId = 'default_channel';
   static const _defaultChannelName = 'Default Notifications';
-  static const _defaultChannelDesc = 'Kênh nhận thông báo mặc định của hệ thống';
+  static const _defaultChannelDesc =
+      'Kênh nhận thông báo mặc định của hệ thống';
 
   static const _highChannelId = 'high_importance_channel';
   static const _highChannelName = 'High Importance Notifications';
@@ -49,7 +50,9 @@ class LocalNotificationService {
       );
 
       // 2. Thiết lập cấu hình Android
-      const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const androidSettings = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
 
       // 3. Thiết lập cấu hình iOS (Darwin)
       const iosSettings = DarwinInitializationSettings(
@@ -99,7 +102,8 @@ class LocalNotificationService {
 
     final androidImplementation = _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidImplementation == null) return;
 
@@ -141,13 +145,16 @@ class LocalNotificationService {
       if (Platform.isAndroid) {
         final androidImplementation = _notificationsPlugin
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>();
-        final granted = await androidImplementation?.requestNotificationsPermission();
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        final granted = await androidImplementation
+            ?.requestNotificationsPermission();
         return granted ?? false;
       } else if (Platform.isIOS) {
         final iosImplementation = _notificationsPlugin
             .resolvePlatformSpecificImplementation<
-                IOSFlutterLocalNotificationsPlugin>();
+              IOSFlutterLocalNotificationsPlugin
+            >();
         final granted = await iosImplementation?.requestPermissions(
           alert: true,
           badge: true,
@@ -206,7 +213,10 @@ class LocalNotificationService {
 
       const iosDetails = DarwinNotificationDetails();
 
-      final details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
       await _notificationsPlugin.show(
         id: id,
@@ -243,18 +253,25 @@ class LocalNotificationService {
   }) async {
     try {
       final channelId = isHighPriority ? _highChannelId : _defaultChannelId;
-      final channelName = isHighPriority ? _highChannelName : _defaultChannelName;
+      final channelName = isHighPriority
+          ? _highChannelName
+          : _defaultChannelName;
 
       final androidDetails = AndroidNotificationDetails(
         channelId,
         channelName,
-        importance: isHighPriority ? Importance.max : Importance.defaultImportance,
+        importance: isHighPriority
+            ? Importance.max
+            : Importance.defaultImportance,
         priority: isHighPriority ? Priority.high : Priority.defaultPriority,
       );
 
       const iosDetails = DarwinNotificationDetails();
 
-      final details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
       final tzDateTime = tz.TZDateTime.from(scheduledTime, tz.local);
 
@@ -315,7 +332,10 @@ class LocalNotificationService {
       );
 
       const iosDetails = DarwinNotificationDetails();
-      const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+      const details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
       await _notificationsPlugin.zonedSchedule(
         id: id,
@@ -369,7 +389,10 @@ class LocalNotificationService {
       );
 
       const iosDetails = DarwinNotificationDetails();
-      final details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
       await _notificationsPlugin.show(
         id: id,
@@ -393,7 +416,8 @@ class LocalNotificationService {
   Future<void> showGroupedNotifications({
     required String groupKey,
     required String groupName,
-    required List<Map<String, String>> messages, // Mỗi item có 'title' và 'body'
+    required List<Map<String, String>>
+    messages, // Mỗi item có 'title' và 'body'
     required String summaryTitle,
     required String summaryBody,
   }) async {

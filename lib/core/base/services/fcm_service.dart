@@ -33,7 +33,8 @@ class FcmService {
   final StreamController<Map<String, dynamic>> _notificationClickStream =
       StreamController<Map<String, dynamic>>.broadcast();
 
-  Stream<Map<String, dynamic>> get onClickNotification => _notificationClickStream.stream;
+  Stream<Map<String, dynamic>> get onClickNotification =>
+      _notificationClickStream.stream;
 
   // Subscription để quản lý vòng đời lắng nghe click từ LocalNotificationService
   StreamSubscription<String?>? _localNotiClickSubscription;
@@ -42,7 +43,9 @@ class FcmService {
   Future<void> initialize() async {
     try {
       // 1. Đăng ký hàm xử lý thông báo chạy ngầm
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
 
       // 2. Lắng nghe thông báo ở chế độ foreground (app đang mở)
       FirebaseMessaging.onMessage.listen((message) {
@@ -63,17 +66,19 @@ class FcmService {
       });
 
       // 4. Lắng nghe nhấp chuột thông báo được chuyển tiếp từ LocalNotificationService (khi hiển thị ở foreground)
-      _localNotiClickSubscription = _localNotificationService.onClickNotification.listen((payload) {
-        if (payload != null && payload.isNotEmpty) {
-          try {
-            final data = jsonDecode(payload) as Map<String, dynamic>;
-            _handleNotificationClick(data);
-          } on Object catch (_) {
-            // Trường hợp payload không phải JSON, gửi dạng map rỗng hoặc chứa payload gốc
-            _handleNotificationClick({'payload': payload});
-          }
-        }
-      });
+      _localNotiClickSubscription = _localNotificationService
+          .onClickNotification
+          .listen((payload) {
+            if (payload != null && payload.isNotEmpty) {
+              try {
+                final data = jsonDecode(payload) as Map<String, dynamic>;
+                _handleNotificationClick(data);
+              } on Object catch (_) {
+                // Trường hợp payload không phải JSON, gửi dạng map rỗng hoặc chứa payload gốc
+                _handleNotificationClick({'payload': payload});
+              }
+            }
+          });
 
       // 5. Kiểm tra xem ứng dụng có được khởi động từ một thông báo khi bị tắt hoàn toàn hay không
       final initialMessage = await _firebaseMessaging.getInitialMessage();
@@ -102,7 +107,8 @@ class FcmService {
     try {
       final settings = await _firebaseMessaging.requestPermission();
 
-      final granted = settings.authorizationStatus == AuthorizationStatus.authorized ||
+      final granted =
+          settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional;
 
       developer.log(
@@ -160,7 +166,10 @@ class FcmService {
   Future<void> subscribeToTopic(String topic) async {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
-      developer.log('Đăng ký nhận Topic thành công: $topic', name: 'fcm.service');
+      developer.log(
+        'Đăng ký nhận Topic thành công: $topic',
+        name: 'fcm.service',
+      );
     } on Object catch (e, s) {
       developer.log(
         'Lỗi đăng ký nhận Topic: $topic',
@@ -191,15 +200,18 @@ class FcmService {
     final notification = message.notification;
     if (notification == null) return;
 
-    final id = message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch;
+    final id =
+        message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch;
 
-    unawaited(_localNotificationService.showInstantNotification(
-      id: id,
-      title: notification.title ?? '',
-      body: notification.body ?? '',
-      isHighPriority: true,
-      payload: message.data.isNotEmpty ? jsonEncode(message.data) : null,
-    ));
+    unawaited(
+      _localNotificationService.showInstantNotification(
+        id: id,
+        title: notification.title ?? '',
+        body: notification.body ?? '',
+        isHighPriority: true,
+        payload: message.data.isNotEmpty ? jsonEncode(message.data) : null,
+      ),
+    );
   }
 
   /// Phát tín hiệu click thông báo và đẩy data payload qua Stream.

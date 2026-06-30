@@ -44,7 +44,8 @@ class PasskeyService {
         return availability.hasBiometrics;
       } else if (Platform.isAndroid) {
         final availability = await _authenticator.getAvailability().android();
-        return availability.isUserVerifyingPlatformAuthenticatorAvailable ?? false;
+        return availability.isUserVerifyingPlatformAuthenticatorAvailable ??
+            false;
       }
       return false;
     } on Object catch (e, s) {
@@ -78,7 +79,10 @@ class PasskeyService {
   /// Trả về chuỗi JSON chứa kết quả tạo khóa để gửi ngược lại Server xác thực.
   Future<String> registerPasskey(String optionsJsonString) async {
     try {
-      developer.log('Bắt đầu quá trình đăng ký Passkey', name: 'passkey.service');
+      developer.log(
+        'Bắt đầu quá trình đăng ký Passkey',
+        name: 'passkey.service',
+      );
       final request = RegisterRequestType.fromJsonString(optionsJsonString);
       final response = await _authenticator.register(request);
       developer.log('Đăng ký Passkey thành công', name: 'passkey.service');
@@ -104,7 +108,10 @@ class PasskeyService {
   /// Trả về chuỗi JSON chứa thông tin chữ ký để gửi ngược lại Server xác thực.
   Future<String> authenticatePasskey(String optionsJsonString) async {
     try {
-      developer.log('Bắt đầu quá trình xác thực Passkey', name: 'passkey.service');
+      developer.log(
+        'Bắt đầu quá trình xác thực Passkey',
+        name: 'passkey.service',
+      );
       final request = AuthenticateRequestType.fromJsonString(optionsJsonString);
       final response = await _authenticator.authenticate(request);
       developer.log('Xác thực Passkey thành công', name: 'passkey.service');
@@ -138,10 +145,13 @@ class PasskeyService {
     );
 
     if (e is pk_exceptions.PasskeyAuthCancelledException) {
-      throw AuthException(message: 'Yêu cầu xác thực Passkey bị hủy bởi người dùng.');
+      throw AuthException(
+        message: 'Yêu cầu xác thực Passkey bị hủy bởi người dùng.',
+      );
     } else if (e is pk_exceptions.MissingGoogleSignInException) {
       throw AuthException(
-        message: 'Cần đăng nhập tài khoản Google trên thiết bị này để sử dụng Passkey.',
+        message:
+            'Cần đăng nhập tài khoản Google trên thiết bị này để sử dụng Passkey.',
       );
     } else if (e is pk_exceptions.SyncAccountNotAvailableException) {
       throw AuthException(
@@ -149,7 +159,8 @@ class PasskeyService {
       );
     } else if (e is pk_exceptions.NoCredentialsAvailableException) {
       throw AuthException(
-        message: 'Không tìm thấy thông tin đăng ký Passkey phù hợp trên thiết bị.',
+        message:
+            'Không tìm thấy thông tin đăng ký Passkey phù hợp trên thiết bị.',
       );
     } else if (e is pk_exceptions.DeviceNotSupportedException) {
       throw AuthException(
@@ -157,7 +168,8 @@ class PasskeyService {
       );
     } else if (e is pk_exceptions.DomainNotAssociatedException) {
       throw AuthException(
-        message: 'Tên miền chưa được liên kết chính xác với ứng dụng: ${e.message}',
+        message:
+            'Tên miền chưa được liên kết chính xác với ứng dụng: ${e.message}',
       );
     } else if (e is pk_exceptions.NoCreateOptionException) {
       throw AuthException(
@@ -169,11 +181,13 @@ class PasskeyService {
       );
     } else if (e is pk_exceptions.MalformedBase64Url) {
       throw ValidationException(
-        message: 'Dữ liệu challenge hoặc thông tin người dùng từ máy chủ bị lỗi định dạng Base64URL.',
+        message:
+            'Dữ liệu challenge hoặc thông tin người dùng từ máy chủ bị lỗi định dạng Base64URL.',
       );
     } else if (e is pk_exceptions.UnhandledAuthenticatorException) {
       throw AppException(
-        message: 'Lỗi xác thực hệ thống chưa được hỗ trợ (code: ${e.code}): ${e.message}',
+        message:
+            'Lỗi xác thực hệ thống chưa được hỗ trợ (code: ${e.code}): ${e.message}',
       );
     } else {
       throw AppException(

@@ -32,15 +32,22 @@ enum DeviceCategory {
 }
 
 /// Widget xây dựng giao diện đáp ứng (Responsive) mạnh mẽ và linh hoạt.
-/// Hỗ trợ cả hai chế độ:
-/// 1. **Container-based Responsive**: Dựa trên kích thước vùng chứa của widget cha (`LayoutBuilder`).
-/// 2. **Screen-based Responsive**: Dựa trên kích thước màn hình thiết bị thực tế (`MediaQuery`).
+/// Hỗ trợ cả hai chế độ phân tích bố cục:
+///
+/// 1. **Container-based Responsive** (`useDeviceType = false` - Mặc định):
+///    Dựa trên kích thước vùng chứa thực tế của widget cha (`BoxConstraints.maxWidth`).
+///    Cực kỳ thích hợp cho các widget con tái sử dụng (components) khi đặt vào các cột khác nhau.
+///
+/// 2. **Device-type-based Responsive** (`useDeviceType = true`):
+///    Dựa trên loại thiết bị vật lý thực tế (Phone/Tablet/Desktop) được tính qua cạnh ngắn nhất (`shortestSide`).
+///    Đồng bộ hoàn toàn với hệ số scale của `AppScaleBuilder`, giúp giải quyết triệt để lỗi Phone xoay ngang
+///    bị nhận nhầm và hiển thị vỡ theo layout của Tablet.
 ///
 /// **Hướng dẫn sử dụng:**
 /// ```dart
 /// ResponsiveLayoutBuilder(
+///   useDeviceType: true, // Bật khi làm layout cấp trang (Page level) để đồng bộ với AppScaleBuilder
 ///   mobileBuilder: (context, constraints) => const MobileLayout(),
-///   // Tablet và Desktop là tuỳ chọn. Nếu không truyền sẽ tự động fallback xuống thiết bị nhỏ hơn.
 ///   tabletBuilder: (context, constraints) => const TabletLayout(),
 ///   desktopBuilder: (context, constraints) => const DesktopLayout(),
 /// )
@@ -55,28 +62,40 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
     this.desktopXlBuilder,
     this.portraitBuilder,
     this.landscapeBuilder,
+    this.useDeviceType = false,
   });
 
   /// Giao diện cho thiết bị di động (bắt buộc làm giao diện gốc/fallback)
-  final Widget Function(BuildContext context, BoxConstraints constraints) mobileBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)
+  mobileBuilder;
 
   /// Giao diện cho thiết bị cực nhỏ (như Smartwatch)
-  final Widget Function(BuildContext context, BoxConstraints constraints)? watchBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  watchBuilder;
 
   /// Giao diện cho máy tính bảng
-  final Widget Function(BuildContext context, BoxConstraints constraints)? tabletBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  tabletBuilder;
 
   /// Giao diện cho màn hình máy tính bàn / Laptop
-  final Widget Function(BuildContext context, BoxConstraints constraints)? desktopBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  desktopBuilder;
 
   /// Giao diện cho màn hình siêu lớn (2K, 4K, Tivi)
-  final Widget Function(BuildContext context, BoxConstraints constraints)? desktopXlBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  desktopXlBuilder;
 
   /// Giao diện bổ trợ chỉ hiển thị khi thiết bị xoay dọc (Portrait)
-  final Widget Function(BuildContext context, BoxConstraints constraints)? portraitBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  portraitBuilder;
 
   /// Giao diện bổ trợ chỉ hiển thị khi thiết bị xoay ngang (Landscape)
-  final Widget Function(BuildContext context, BoxConstraints constraints)? landscapeBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)?
+  landscapeBuilder;
+
+  /// Nếu đặt là `true`, widget sẽ quyết định layout dựa trên loại thiết bị thực tế (dựa trên shortestSide)
+  /// thay vì dựa trên chiều rộng vùng chứa `constraints.maxWidth`.
+  final bool useDeviceType;
 
   // ==========================================================================
   // BỘ UTILS TĨNH - ĐỊNH DANH THIẾT BỊ THEO TIÊU CHUẨN TRẢI NGHIỆM NGƯỜI DÙNG
@@ -89,7 +108,7 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
     if (mediaQuery == null) {
       return DeviceCategory.mobile;
     }
-    
+
     final size = mediaQuery.size;
     final shortestSide = min(size.width, size.height);
 
@@ -145,12 +164,53 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // CHẾ ĐỘ 1: Xây dựng layout dựa trên loại thiết bị vật lý thực tế (shortestSide)
+    // Giúp đồng bộ hoàn toàn với hệ số scale của AppScaleBuilder ở mức trang (Page level)
+    if (useDeviceType) {
+      final category = getDeviceCategory(context);
+      final isDeviceLandscape =
+          MediaQuery.orientationOf(context) == Orientation.landscape;
+
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          // Kiểm tra hướng xoay vật lý ưu tiên
+          if (isDeviceLandscape && landscapeBuilder != null) {
+            return landscapeBuilder!(context, constraints);
+          }
+          if (!isDeviceLandscape && portraitBuilder != null) {
+            return portraitBuilder!(context, constraints);
+          }
+
+          switch (category) {
+            case DeviceCategory.watch:
+              if (watchBuilder != null)
+                return watchBuilder!(context, constraints);
+              return mobileBuilder(context, constraints);
+            case DeviceCategory.mobile:
+              return mobileBuilder(context, constraints);
+            case DeviceCategory.tablet:
+              if (tabletBuilder != null)
+                return tabletBuilder!(context, constraints);
+              return mobileBuilder(context, constraints);
+            case DeviceCategory.desktop:
+              if (desktopBuilder != null)
+                return desktopBuilder!(context, constraints);
+              if (tabletBuilder != null)
+                return tabletBuilder!(context, constraints);
+              return mobileBuilder(context, constraints);
+          }
+        },
+      );
+    }
+
+    // CHẾ ĐỘ 2: Xây dựng layout dựa trên kích thước vùng chứa (Container-based Constraints)
+    // Tự thích nghi linh hoạt khi đặt vào các widget cha có kích thước co giãn khác nhau
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         final maxHeight = constraints.maxHeight;
 
-        // 1. Kiểm tra hướng vùng chứa (nếu có yêu cầu render riêng theo hướng dọc/ngang của widget)
+        // Kiểm tra hướng vùng chứa ưu tiên
         if (landscapeBuilder != null && maxWidth > maxHeight) {
           return landscapeBuilder!(context, constraints);
         }
@@ -158,21 +218,25 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
           return portraitBuilder!(context, constraints);
         }
 
-        // 2. Chạy cơ chế tìm kiếm layout phù hợp theo chiều rộng vùng chứa (Container-based)
         if (maxWidth >= AppBreakpoints.desktopXl) {
-          if (desktopXlBuilder != null) return desktopXlBuilder!(context, constraints);
-          if (desktopBuilder != null) return desktopBuilder!(context, constraints);
-          if (tabletBuilder != null) return tabletBuilder!(context, constraints);
+          if (desktopXlBuilder != null)
+            return desktopXlBuilder!(context, constraints);
+          if (desktopBuilder != null)
+            return desktopBuilder!(context, constraints);
+          if (tabletBuilder != null)
+            return tabletBuilder!(context, constraints);
         } else if (maxWidth >= AppBreakpoints.tablet) {
-          if (desktopBuilder != null) return desktopBuilder!(context, constraints);
-          if (tabletBuilder != null) return tabletBuilder!(context, constraints);
+          if (desktopBuilder != null)
+            return desktopBuilder!(context, constraints);
+          if (tabletBuilder != null)
+            return tabletBuilder!(context, constraints);
         } else if (maxWidth >= AppBreakpoints.mobile) {
-          if (tabletBuilder != null) return tabletBuilder!(context, constraints);
+          if (tabletBuilder != null)
+            return tabletBuilder!(context, constraints);
         } else if (maxWidth < AppBreakpoints.watch) {
           if (watchBuilder != null) return watchBuilder!(context, constraints);
         }
 
-        // 3. Fallback mặc định về mobile layout
         return mobileBuilder(context, constraints);
       },
     );

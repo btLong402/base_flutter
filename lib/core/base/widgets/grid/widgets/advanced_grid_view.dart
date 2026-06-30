@@ -39,13 +39,16 @@ class AdvancedGridView extends BoxScrollView {
        super(
          padding: padding ?? layout.padding,
          scrollCacheExtent:
-             (scrollCacheExtent ?? layout.cacheExtent ?? layout.prefetchExtent) != null
-                 ? ScrollCacheExtent.pixels(
-                     scrollCacheExtent ??
-                         layout.cacheExtent ??
-                         layout.prefetchExtent!,
-                   )
-                 : null,
+             (scrollCacheExtent ??
+                     layout.cacheExtent ??
+                     layout.prefetchExtent) !=
+                 null
+             ? ScrollCacheExtent.pixels(
+                 scrollCacheExtent ??
+                     layout.cacheExtent ??
+                     layout.prefetchExtent!,
+               )
+             : null,
          clipBehavior: clipBehavior ?? Clip.hardEdge,
        );
 

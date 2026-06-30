@@ -68,7 +68,9 @@ class AppScaleBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 1. Fallback an toàn cho môi trường Testing hoặc khi view chưa gắn kết hoàn toàn
-    final view = View.maybeOf(context) ?? WidgetsBinding.instance.platformDispatcher.implicitView;
+    final view =
+        View.maybeOf(context) ??
+        WidgetsBinding.instance.platformDispatcher.implicitView;
     if (view == null) {
       return _buildScreenUtil(phoneDesignSize);
     }
@@ -78,8 +80,10 @@ class AppScaleBuilder extends StatelessWidget {
     final physicalHeight = view.physicalSize.height;
     final devicePixelRatio = view.devicePixelRatio;
 
-    final width = physicalWidth / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
-    final height = physicalHeight / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
+    final width =
+        physicalWidth / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
+    final height =
+        physicalHeight / (devicePixelRatio > 0 ? devicePixelRatio : 1.0);
 
     // 3. Tiêu chuẩn vàng: Sử dụng shortest side để phân biệt Phone & Tablet (sw600dp),
     // giúp Phone xoay ngang (ví dụ 812x375) vẫn được nhận diện chính xác là Phone.

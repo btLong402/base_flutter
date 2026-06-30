@@ -5,8 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///
 /// Uses autoDispose to ensure the controller and its timers are cleaned up
 /// when the user navigates away from the Home feature for an extended period.
-final Provider<PaginationController<String>>
-homePaginationControllerProvider =
+final Provider<PaginationController<String>> homePaginationControllerProvider =
     Provider.autoDispose<PaginationController<String>>((ref) {
       final controller = PaginationController<String>(
         pageSize: 15,

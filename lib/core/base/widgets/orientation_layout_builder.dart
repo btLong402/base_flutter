@@ -25,10 +25,12 @@ class OrientationLayoutBuilder extends StatelessWidget {
   });
 
   /// Giao diện khi vùng chứa có chiều dọc lớn hơn hoặc bằng chiều ngang (Portrait).
-  final Widget Function(BuildContext context, BoxConstraints constraints) portraitBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)
+  portraitBuilder;
 
   /// Giao diện khi vùng chứa có chiều ngang lớn hơn chiều dọc (Landscape).
-  final Widget Function(BuildContext context, BoxConstraints constraints) landscapeBuilder;
+  final Widget Function(BuildContext context, BoxConstraints constraints)
+  landscapeBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,8 @@ class OrientationLayoutBuilder extends StatelessWidget {
 
         // 2. Edge Case: Nếu có chiều bị vô hạn (ví dụ nằm trong ListView dọc/ngang không giới hạn)
         // Ta tự động fallback sử dụng hướng xoay thực tế của thiết bị thông qua MediaQuery
-        final deviceOrientation = MediaQuery.maybeOrientationOf(context) ?? Orientation.portrait;
+        final deviceOrientation =
+            MediaQuery.maybeOrientationOf(context) ?? Orientation.portrait;
         if (deviceOrientation == Orientation.landscape) {
           return landscapeBuilder(context, constraints);
         }

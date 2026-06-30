@@ -119,7 +119,7 @@ abstract class BaseNotifier<S> extends StateNotifier<S> {
   }
 
   /// Helper to execute a [FutureResult] (such as a use case invocation) and handle state transitions.
-  /// 
+  ///
   /// Calls [onLoading] before executing the task, and resolves the result:
   /// - On success, calls [onSuccess] with the loaded data.
   /// - On failure, maps the [Failure] using [mapFailureToMessage] and calls [onError].

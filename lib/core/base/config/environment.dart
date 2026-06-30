@@ -104,7 +104,8 @@ class EnvironmentConfig {
         webUrl = EnvStaging.webBaseUrl;
         enableLogging = _parseBool(EnvStaging.enableLogging) ?? true;
         enableCaching = _parseBool(EnvStaging.enableCaching) ?? true;
-        rsaPublicKey = EnvStaging.rsaPublicKey ?? AppConstants.serverRsaPublicKey;
+        rsaPublicKey =
+            EnvStaging.rsaPublicKey ?? AppConstants.serverRsaPublicKey;
       case AppFlavor.production:
         environmentName = EnvProd.appEnv;
         baseUrl = EnvProd.apiBaseUrl;

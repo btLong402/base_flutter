@@ -8,10 +8,13 @@ import 'package:passkeys/exceptions.dart' as pk_exceptions;
 import 'package:passkeys/types.dart' hide TimeoutException;
 
 class MockPasskeyAuthenticator extends Mock implements PasskeyAuthenticator {}
+
 class MockGetAvailability extends Mock implements GetAvailability {}
 
 class FakeRegisterRequestType extends Fake implements RegisterRequestType {}
-class FakeAuthenticateRequestType extends Fake implements AuthenticateRequestType {}
+
+class FakeAuthenticateRequestType extends Fake
+    implements AuthenticateRequestType {}
 
 void main() {
   late MockPasskeyAuthenticator mockAuthenticator;
@@ -28,18 +31,26 @@ void main() {
     mockAvailability = MockGetAvailability();
     passkeyService = PasskeyService(mockAuthenticator);
 
-    when(() => mockAuthenticator.getAvailability()).thenReturn(mockAvailability);
+    when(
+      () => mockAuthenticator.getAvailability(),
+    ).thenReturn(mockAvailability);
   });
 
   group('PasskeyService - cancelCurrentOperation', () {
-    test('nên gọi cancelCurrentAuthenticatorOperation từ authenticator', () async {
-      when(() => mockAuthenticator.cancelCurrentAuthenticatorOperation())
-          .thenAnswer((_) async {});
+    test(
+      'nên gọi cancelCurrentAuthenticatorOperation từ authenticator',
+      () async {
+        when(
+          () => mockAuthenticator.cancelCurrentAuthenticatorOperation(),
+        ).thenAnswer((_) async {});
 
-      await passkeyService.cancelCurrentOperation();
+        await passkeyService.cancelCurrentOperation();
 
-      verify(() => mockAuthenticator.cancelCurrentAuthenticatorOperation()).called(1);
-    });
+        verify(
+          () => mockAuthenticator.cancelCurrentAuthenticatorOperation(),
+        ).called(1);
+      },
+    );
   });
 
   group('PasskeyService - registerPasskey', () {
@@ -71,16 +82,17 @@ void main() {
       'type': 'public-key',
       'response': {
         'clientDataJSON': 'client-data-json',
-        'attestationObject': 'attestation-object'
+        'attestationObject': 'attestation-object',
       },
-      'clientExtensionResults': <String, dynamic>{}
+      'clientExtensionResults': <String, dynamic>{},
     };
 
     test('nên trả về JSON string khi đăng ký thành công', () async {
       final mockResponse = RegisterResponseType.fromJson(mockResponseJson);
 
-      when(() => mockAuthenticator.register(any()))
-          .thenAnswer((_) async => mockResponse);
+      when(
+        () => mockAuthenticator.register(any()),
+      ).thenAnswer((_) async => mockResponse);
 
       final result = await passkeyService.registerPasskey(creationOptions);
 
@@ -89,45 +101,60 @@ void main() {
       verify(() => mockAuthenticator.register(any())).called(1);
     });
 
-    test('nên ném AuthException khi người dùng huỷ quá trình đăng ký', () async {
-      when(() => mockAuthenticator.register(any()))
-          .thenThrow(pk_exceptions.PasskeyAuthCancelledException());
+    test(
+      'nên ném AuthException khi người dùng huỷ quá trình đăng ký',
+      () async {
+        when(
+          () => mockAuthenticator.register(any()),
+        ).thenThrow(pk_exceptions.PasskeyAuthCancelledException());
 
-      expect(
-        () => passkeyService.registerPasskey(creationOptions),
-        throwsA(isA<AuthException>().having(
-          (e) => e.message,
-          'message',
-          contains('bị hủy bởi người dùng'),
-        )),
-      );
-    });
+        expect(
+          () => passkeyService.registerPasskey(creationOptions),
+          throwsA(
+            isA<AuthException>().having(
+              (e) => e.message,
+              'message',
+              contains('bị hủy bởi người dùng'),
+            ),
+          ),
+        );
+      },
+    );
 
-    test('nên ném TimeoutException khi quá trình đăng ký bị quá thời gian', () async {
-      when(() => mockAuthenticator.register(any()))
-          .thenThrow(pk_exceptions.TimeoutException('Timeout occurred'));
+    test(
+      'nên ném TimeoutException khi quá trình đăng ký bị quá thời gian',
+      () async {
+        when(
+          () => mockAuthenticator.register(any()),
+        ).thenThrow(pk_exceptions.TimeoutException('Timeout occurred'));
 
-      expect(
-        () => passkeyService.registerPasskey(creationOptions),
-        throwsA(isA<TimeoutException>().having(
-          (e) => e.message,
-          'message',
-          contains('Quá thời gian xác thực Passkey'),
-        )),
-      );
-    });
+        expect(
+          () => passkeyService.registerPasskey(creationOptions),
+          throwsA(
+            isA<TimeoutException>().having(
+              (e) => e.message,
+              'message',
+              contains('Quá thời gian xác thực Passkey'),
+            ),
+          ),
+        );
+      },
+    );
 
     test('nên ném AppException khi có lỗi không xác định xảy ra', () async {
-      when(() => mockAuthenticator.register(any()))
-          .thenThrow(Exception('Unknown error'));
+      when(
+        () => mockAuthenticator.register(any()),
+      ).thenThrow(Exception('Unknown error'));
 
       expect(
         () => passkeyService.registerPasskey(creationOptions),
-        throwsA(isA<AppException>().having(
-          (e) => e.message,
-          'message',
-          contains('Có lỗi không xác định xảy ra khi đăng ký Passkey'),
-        )),
+        throwsA(
+          isA<AppException>().having(
+            (e) => e.message,
+            'message',
+            contains('Có lỗi không xác định xảy ra khi đăng ký Passkey'),
+          ),
+        ),
       );
     });
   });
@@ -149,16 +176,17 @@ void main() {
         'clientDataJSON': 'client-data-json',
         'authenticatorData': 'authenticator-data',
         'signature': 'signature',
-        'userHandle': 'user-handle'
+        'userHandle': 'user-handle',
       },
-      'clientExtensionResults': <String, dynamic>{}
+      'clientExtensionResults': <String, dynamic>{},
     };
 
     test('nên trả về JSON string khi xác thực thành công', () async {
       final mockResponse = AuthenticateResponseType.fromJson(mockResponseJson);
 
-      when(() => mockAuthenticator.authenticate(any()))
-          .thenAnswer((_) async => mockResponse);
+      when(
+        () => mockAuthenticator.authenticate(any()),
+      ).thenAnswer((_) async => mockResponse);
 
       final result = await passkeyService.authenticatePasskey(requestOptions);
 
@@ -168,18 +196,24 @@ void main() {
       verify(() => mockAuthenticator.authenticate(any())).called(1);
     });
 
-    test('nên ném AuthException khi thiết bị không tìm thấy credentials phù hợp', () async {
-      when(() => mockAuthenticator.authenticate(any()))
-          .thenThrow(pk_exceptions.NoCredentialsAvailableException());
+    test(
+      'nên ném AuthException khi thiết bị không tìm thấy credentials phù hợp',
+      () async {
+        when(
+          () => mockAuthenticator.authenticate(any()),
+        ).thenThrow(pk_exceptions.NoCredentialsAvailableException());
 
-      expect(
-        () => passkeyService.authenticatePasskey(requestOptions),
-        throwsA(isA<AuthException>().having(
-          (e) => e.message,
-          'message',
-          contains('Không tìm thấy thông tin đăng ký Passkey'),
-        )),
-      );
-    });
+        expect(
+          () => passkeyService.authenticatePasskey(requestOptions),
+          throwsA(
+            isA<AuthException>().having(
+              (e) => e.message,
+              'message',
+              contains('Không tìm thấy thông tin đăng ký Passkey'),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
