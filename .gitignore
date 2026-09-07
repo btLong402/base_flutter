@@ -56,3 +56,15 @@ assets/env/.env.*
 
 # Envied generated code containing obfuscated values
 lib/core/base/config/env/*.g.dart
+
+# ==============================================================================
+# Flutter Pro Max — AI Skill & Design System Artifacts
+# ==============================================================================
+.shared/
+design-system/pages/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.lcov
+.fvm/flutter_sdk
