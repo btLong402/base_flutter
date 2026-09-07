@@ -1,10 +1,10 @@
 import 'package:base_flutter/core/base/widgets/custom_image_widget/cache_manager.dart';
 import 'package:base_flutter/core/base/widgets/custom_image_widget/custom_image.dart';
+import 'package:base_flutter/core/base/widgets/shimmer/app_shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
 
 class CustomImageWidget extends StatelessWidget {
   const CustomImageWidget({
@@ -104,9 +104,9 @@ class CustomImageWidget extends StatelessWidget {
     if (!useShimmer) {
       return const Center(child: CircularProgressIndicator());
     }
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+    return AppShimmer.fromColors(
+      baseColor: Colors.grey[300],
+      highlightColor: Colors.grey[100],
       child: Container(width: width, height: height, color: Colors.white),
     );
   }

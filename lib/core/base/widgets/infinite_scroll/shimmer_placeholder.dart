@@ -1,5 +1,5 @@
+import 'package:base_flutter/core/base/widgets/shimmer/app_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 /// Configurable shimmer loading placeholder for infinite scroll lists.
 ///
@@ -66,26 +66,21 @@ class ShimmerPlaceholder extends StatelessWidget {
 
     return Padding(
       padding: padding,
-      child: Shimmer.fromColors(
+      child: AppShimmer.fromColors(
         baseColor: base,
         highlightColor: highlight,
-        child: SingleChildScrollView(
+        child: ListView.separated(
+          shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            children: List.generate(itemCount, (index) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: index < itemCount - 1 ? itemSpacing : 0,
-                ),
-                child:
-                    itemBuilder?.call(context, index) ??
-                    _DefaultSkeletonItem(
-                      height: itemHeight,
-                      borderRadius: borderRadius,
-                    ),
-              );
-            }),
-          ),
+          itemCount: itemCount,
+          separatorBuilder: (context, index) => SizedBox(height: itemSpacing),
+          itemBuilder: (context, index) {
+            return itemBuilder?.call(context, index) ??
+                _DefaultSkeletonItem(
+                  height: itemHeight,
+                  borderRadius: borderRadius,
+                );
+          },
         ),
       ),
     );
@@ -204,7 +199,7 @@ class ShimmerGridPlaceholder extends StatelessWidget {
 
     return Padding(
       padding: padding,
-      child: Shimmer.fromColors(
+      child: AppShimmer.fromColors(
         baseColor: base,
         highlightColor: highlight,
         child: GridView.builder(

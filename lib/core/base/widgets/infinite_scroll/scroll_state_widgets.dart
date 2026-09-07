@@ -1,10 +1,7 @@
 import 'package:base_flutter/core/base/widgets/empty/app_empty_widget.dart';
-import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll.dart'
-    show InfiniteScrollView;
-import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_view.dart'
-    show InfiniteScrollView;
+import 'package:base_flutter/core/base/widgets/infinite_scroll/infinite_scroll_view.dart';
+import 'package:base_flutter/core/base/widgets/shimmer/app_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 /// Reusable state display widgets for [InfiniteScrollView].
 ///
@@ -37,40 +34,46 @@ class InfiniteScrollLoadingState extends StatelessWidget {
     if (builder != null) return builder!(context);
 
     if (shimmerBuilder != null) {
-      return Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            children: List.generate(
-              shimmerCount,
-              (index) => shimmerBuilder!(context, index),
-            ),
+      return Semantics(
+        label: 'Đang tải dữ liệu',
+        liveRegion: true,
+        child: AppShimmer.fromColors(
+          baseColor: Colors.grey[300],
+          highlightColor: Colors.grey[100],
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: shimmerCount,
+            separatorBuilder: (context, index) => const SizedBox(height: 8),
+            itemBuilder: (context, index) => shimmerBuilder!(context, index),
           ),
         ),
       );
     }
 
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 32,
-            height: 32,
-            child: CircularProgressIndicator(
-              strokeWidth: 3,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                theme.colorScheme.primary,
+    return Semantics(
+      label: 'Đang tải dữ liệu',
+      liveRegion: true,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  theme.colorScheme.primary,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text('Đang tải...', style: theme.textTheme.bodyMedium),
-        ],
+            const SizedBox(height: 12),
+            Text('Đang tải...', style: theme.textTheme.bodyMedium),
+          ],
+        ),
       ),
     );
   }
@@ -120,31 +123,41 @@ class InfiniteScrollErrorState extends StatelessWidget {
     if (builder != null) return builder!(context, error, onRetry);
 
     final theme = Theme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.cloud_off_outlined,
-          size: 48,
-          color: theme.colorScheme.error,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Lỗi kết nối',
-          style: theme.textTheme.titleMedium?.copyWith(
+    return Semantics(
+      label: 'Lỗi kết nối. Nhấn để thử lại.',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.cloud_off_outlined,
+            size: 48,
             color: theme.colorScheme.error,
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Nhấn để thử lại.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.error.withValues(alpha: 0.8),
+          const SizedBox(height: 12),
+          Text(
+            'Lỗi kết nối',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.error,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        FilledButton(onPressed: onRetry, child: const Text('Thử lại')),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            'Nhấn để thử lại.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.error.withValues(alpha: 0.8),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Semantics(
+            button: true,
+            label: 'Thử lại',
+            child: FilledButton(
+              onPressed: onRetry,
+              child: const Text('Thử lại'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -8,12 +8,18 @@ A modular, high-performance infinite scrolling system that works in both Materia
 infinite_scroll/
 ├── infinite_scroll.dart          # Barrel export
 ├── infinite_scroll_view.dart     # Main widget (list/grid/sliver)
-├── pagination_controller.dart    # Load/refresh/retry/CRUD logic
-├── scroll_state_widgets.dart     # Loading/Empty/Error state widgets
+├── pagination_controller.dart    # Load/refresh/retry/CRUD logic (<= 300 lines)
+├── internal/
+│   ├── box_infinite_view.dart       # Box viewport implementation
+│   ├── sliver_infinite_view.dart    # Sliver viewport implementation
+│   ├── pagination_mixins.dart       # CRUD mixin
+│   ├── pagination_scroll_mixin.dart # Scroll throttling/debouncing
+│   └── infinite_scroll_config.dart  # Grid/Layout configurations
+├── scroll_state_widgets.dart     # Loading/Empty/Error state widgets (A11y enhanced)
 ├── entrance_animation.dart       # Lightweight fade+scale animation
-├── load_more_footer.dart         # Animated footer (Dart 3 switch)
+├── load_more_footer.dart         # Animated footer with end indicator & A11y
 ├── scroll_to_top_fab.dart        # Auto-show/hide scroll-to-top FAB
-├── shimmer_placeholder.dart      # Shimmer skeleton loading
+├── shimmer_placeholder.dart      # Shimmer skeleton loading (Virtualized)
 ├── refresh_controls.dart         # Material/Cupertino pull-to-refresh
 ├── separator_builder.dart        # Shared separator logic
 ├── performance_utils.dart        # Constants, helpers, SafeNotifierMixin
@@ -27,10 +33,11 @@ infinite_scroll/
 | Module | Responsibility |
 |--------|---------------|
 | `infinite_scroll_view.dart` | Renders list/grid with refresh & load-more |
-| `pagination_controller.dart` | Page fetching, dedup, CRUD, retry |
-| `scroll_state_widgets.dart` | Loading, empty, error state widgets |
+| `pagination_controller.dart` | Page fetching, dedup, LRU pruning, CRUD, retry |
+| `pagination_scroll_mixin.dart` | Throttling, debouncing & maxExtent scroll detection |
+| `scroll_state_widgets.dart` | Loading, empty, error state widgets with Semantics |
 | `entrance_animation.dart` | Single-pass fade+scale animation |
-| `load_more_footer.dart` | Animated footer with Dart 3 syntax |
+| `load_more_footer.dart` | Animated footer with `showEndIndicator` & A11y |
 | `scroll_to_top_fab.dart` | Auto-show FAB on scroll down |
 | `shimmer_placeholder.dart` | Shimmer skeleton for list & grid |
 | `grid_cache_helper.dart` | Grid cache extent computation |
