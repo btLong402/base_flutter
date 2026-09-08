@@ -1,232 +1,127 @@
-# =============================================================================
-# Flutter Project Makefile Base Configuration
-# Author: btLong402
-# Description: Professional Makefile for building, running, and managing
-#              the Flutter project across multiple environments (Dev, Staging, Prod).
-# =============================================================================
+.PHONY: help setup clean get upgrade build-runner watch format lint analyze test coverage \
+        build-apk-dev build-apk-stg build-apk-prod \
+        build-appbundle-dev build-appbundle-stg build-appbundle-prod \
+        build-ios-dev build-ios-stg build-ios-prod
 
-# Configuration Variables
-# Auto-detect FVM (Flutter Version Management)
-ifeq ($(wildcard .fvm),)
-  FLUTTER_BIN := flutter
-  DART_BIN    := dart
+# Colors for terminal output
+CYAN   := \033[36m
+GREEN  := \033[32m
+YELLOW := \033[33m
+RED    := \033[31m
+RESET  := \033[0m
+
+# ==============================================================================
+# 🎯 FVM (Flutter Version Management) Auto-Detection
+# If .fvmrc or .fvm/ exists in the project and `fvm` is installed, use `fvm flutter`
+# Otherwise fallback seamlessly to system `flutter` and `dart`.
+# ==============================================================================
+FVM_EXISTS := $(shell if [ -f .fvmrc ] || [ -f .fvm/fvm_config.json ] || [ -d .fvm ]; then command -v fvm >/dev/null 2>&1 && echo "yes"; fi)
+
+ifeq ($(FVM_EXISTS),yes)
+  FLUTTER := fvm flutter
+  DART    := fvm dart
+  ENGINE  := $(CYAN)fvm flutter$(RESET) $(YELLOW)(detected FVM)$(RESET)
 else
-  FLUTTER_BIN := fvm flutter
-  DART_BIN    := fvm dart
+  FLUTTER := flutter
+  DART    := dart
+  ENGINE  := $(CYAN)flutter$(RESET) $(GREEN)(system SDK)$(RESET)
 endif
 
-# Target Entry Points (Matching lib/_main/ directory structure)
-ENTRY_DEV     := lib/_main/main.dart
-ENTRY_STAGING := lib/_main/main_staging.dart
-ENTRY_PROD    := lib/_main/main_prod.dart
-
-# Build Flavors (Uncomment and configure if native Android/iOS flavors are configured)
-# FLAVOR_DEV     := development
-# FLAVOR_STAGING := staging
-# FLAVOR_PROD    := production
-
-# Custom build arguments (can be passed via CLI, e.g., make build-apk-prod BUILD_ARGS="--obfuscate --split-debug-info=build/app/outputs/symbols")
-BUILD_ARGS ?=
-
-# ANSI Color Codes for beautiful terminal output
-GREEN  := $(shell printf "\033[32m")
-YELLOW := $(shell printf "\033[33m")
-WHITE  := $(shell printf "\033[37m")
-RESET  := $(shell printf "\033[0m")
-
-.PHONY: help clean get clean-get clean-ios pod-install upgrade \
-        build-runner build-runner-watch build-runner-clean \
-        lint format test test-coverage \
-        run-dev run-staging run-prod \
-        build-apk-dev build-apk-staging build-apk-prod \
-        build-bundle-dev build-bundle-staging build-bundle-prod \
-        build-ipa-dev build-ipa-staging build-ipa-prod \
-        build-ios-dev build-ios-staging build-ios-prod
-
-# Default target is to display the help menu
-.DEFAULT_GOAL := help
-
-help:
-	@echo "============================================================================="
-	@echo "                    $(GREEN)FLUTTER BASE PROJECT MAKEFILE$(RESET)"
-	@echo "============================================================================="
-	@echo "Please choose one of the following commands:"
+## 📋 Help
+help: ## Show this help message
+	@echo "$(CYAN)Available Makefile commands for Flutter:$(RESET)"
+	@echo "  $(YELLOW)Engine:$(RESET) $(ENGINE)"
 	@echo ""
-	@echo "$(YELLOW)Cleaning & Dependencies:$(RESET)"
-	@echo "  make clean                - Clean build files using Flutter Clean"
-	@echo "  make get                  - Fetch package dependencies (pub get)"
-	@echo "  make clean-get            - Clean build files and fetch dependencies"
-	@echo "  make clean-ios            - Deep clean iOS Pods, locks, build cache, and re-init dependencies"
-	@echo "  make pod-install          - Run pod install in iOS directory"
-	@echo "  make upgrade              - Upgrade package dependencies"
-	@echo ""
-	@echo "$(YELLOW)Code Generation & Tools:$(RESET)"
-	@echo "  make build-runner         - Run build runner to generate files (one-time build)"
-	@echo "  make build-runner-watch   - Run build runner in watch mode"
-	@echo "  make build-runner-clean   - Clean build runner caches"
-	@echo "  make lint                 - Analyze Dart code for errors or warnings"
-	@echo "  make format               - Format all Dart source files"
-	@echo "  make test                 - Run all unit tests"
-	@echo "  make test-coverage        - Run unit tests and generate HTML coverage report"
-	@echo ""
-	@echo "$(YELLOW)Run App (Development mode):$(RESET)"
-	@echo "  make run-dev              - Run Development environment ($(ENTRY_DEV))"
-	@echo "  make run-staging          - Run Staging environment ($(ENTRY_STAGING))"
-	@echo "  make run-prod             - Run Production environment ($(ENTRY_PROD))"
-	@echo ""
-	@echo "$(YELLOW)Build Android:$(RESET)"
-	@echo "  make build-apk-dev        - Build Development APK"
-	@echo "  make build-apk-staging    - Build Staging APK"
-	@echo "  make build-apk-prod       - Build Production APK"
-	@echo "  make build-bundle-dev     - Build Development App Bundle (AAB)"
-	@echo "  make build-bundle-staging - Build Staging App Bundle (AAB)"
-	@echo "  make build-bundle-prod    - Build Production App Bundle (AAB)"
-	@echo ""
-	@echo "$(YELLOW)Build iOS:$(RESET)"
-	@echo "  make build-ipa-dev        - Build Development IPA (App Store/Ad-Hoc)"
-	@echo "  make build-ipa-staging    - Build Staging IPA"
-	@echo "  make build-ipa-prod       - Build Production IPA"
-	@echo "  make build-ios-dev        - Build Development iOS App bundle"
-	@echo "  make build-ios-staging    - Build Staging iOS App bundle"
-	@echo "  make build-ios-prod       - Build Production iOS App bundle"
-	@echo "============================================================================="
-	@echo "Note: You can pass custom options using BUILD_ARGS, e.g.:"
-	@echo "      make build-apk-prod BUILD_ARGS=\"--obfuscate --split-debug-info=build/symbols\""
-	@echo "============================================================================="
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-24s$(RESET) %s\n", $$1, $$2}'
 
-# -----------------------------------------------------------------------------
-# Cleaning & Dependencies
-# -----------------------------------------------------------------------------
+## 🚀 Environment & Setup
+setup: clean get build-runner ## Fresh setup: clean, get packages, run build_runner
+	@echo "$(GREEN)✓ Setup completed successfully.$(RESET)"
 
-clean:
-	@echo "$(YELLOW)Cleaning Flutter project...$(RESET)"
-	@$(FLUTTER_BIN) clean
+get: ## Install Flutter dependencies (flutter pub get)
+	@echo "$(CYAN)→ Getting packages with $(FLUTTER)...$(RESET)"
+	@$(FLUTTER) pub get
 
-get:
-	@echo "$(YELLOW)Fetching packages...$(RESET)"
-	@$(FLUTTER_BIN) pub get
+upgrade: ## Upgrade dependencies (flutter pub upgrade)
+	@echo "$(CYAN)→ Upgrading packages with $(FLUTTER)...$(RESET)"
+	@$(FLUTTER) pub upgrade
 
-clean-get: clean get
+clean: ## Clean Flutter build cache and artifacts
+	@echo "$(YELLOW)→ Cleaning project with $(FLUTTER)...$(RESET)"
+	@$(FLUTTER) clean
+	@rm -rf coverage/
+	@rm -rf build/
 
-clean-ios:
-	@echo "$(YELLOW)Deep cleaning iOS workspace...$(RESET)"
-	@rm -rf ios/Pods ios/Podfile.lock ios/.symlinks ios/Flutter/Flutter.podspec ios/Flutter/Flutter.framework
-	@$(FLUTTER_BIN) clean
-	@$(FLUTTER_BIN) pub get
-	@echo "$(YELLOW)Installing pods...$(RESET)"
-	@cd ios && pod install
+## ⚙️ Code Generation
+build-runner: ## Run build_runner once to generate files
+	@echo "$(CYAN)→ Running build_runner with $(DART)...$(RESET)"
+	@$(DART) run build_runner build --delete-conflicting-outputs
 
-pod-install:
-	@echo "$(YELLOW)Running pod install...$(RESET)"
-	@cd ios && pod install
+watch: ## Watch and rebuild generated files on change
+	@echo "$(CYAN)→ Watching build_runner with $(DART)...$(RESET)"
+	@$(DART) run build_runner watch --delete-conflicting-outputs
 
-upgrade:
-	@echo "$(YELLOW)Upgrading packages...$(RESET)"
-	@$(FLUTTER_BIN) pub upgrade
+## 🔍 Code Quality & Testing
+format: ## Format Dart code (line-length 120)
+	@echo "$(CYAN)→ Formatting code with $(DART)...$(RESET)"
+	@$(DART) format --line-length=120 lib test
 
-# -----------------------------------------------------------------------------
-# Code Generation & Quality
-# -----------------------------------------------------------------------------
+lint: analyze ## Run linter and static analysis
+analyze: ## Run flutter analyze
+	@echo "$(CYAN)→ Running static analysis with $(FLUTTER)...$(RESET)"
+	@$(FLUTTER) analyze
 
-build-runner:
-	@echo "$(YELLOW)Generating files using build_runner...$(RESET)"
-	@$(DART_BIN) run build_runner build --delete-conflicting-outputs
+test: ## Run unit and widget tests
+	@echo "$(CYAN)→ Running tests with $(FLUTTER)...$(RESET)"
+	@$(FLUTTER) test
 
-build-runner-watch:
-	@echo "$(YELLOW)Starting build_runner watch...$(RESET)"
-	@$(DART_BIN) run build_runner watch --delete-conflicting-outputs
+coverage: ## Run tests with code coverage report
+	@echo "$(CYAN)→ Running tests with coverage...$(RESET)"
+	@$(FLUTTER) test --coverage
+	@if command -v genhtml > /dev/null; then \
+		echo "$(GREEN)→ Generating HTML coverage report...$(RESET)"; \
+		genhtml coverage/lcov.info -o coverage/html; \
+		echo "$(GREEN)✓ Coverage report available at coverage/html/index.html$(RESET)"; \
+	else \
+		echo "$(YELLOW)⚠ genhtml not found. Install lcov to generate HTML coverage report.$(RESET)"; \
+	fi
 
-build-runner-clean:
-	@echo "$(YELLOW)Cleaning build_runner cache...$(RESET)"
-	@$(DART_BIN) run build_runner clean
+check: format lint test ## Run format, lint, and test sequentially
 
-lint:
-	@echo "$(YELLOW)Analyzing code...$(RESET)"
-	@$(FLUTTER_BIN) analyze
+## 📱 Android Builds (Flavors)
+build-apk-dev: ## Build Android APK (Flavor: dev)
+	@echo "$(CYAN)→ Building APK (dev)...$(RESET)"
+	@$(FLUTTER) build apk --flavor dev -t lib/main_dev.dart
 
-format:
-	@echo "$(YELLOW)Formatting code...$(RESET)"
-	@$(DART_BIN) format .
+build-apk-stg: ## Build Android APK (Flavor: staging)
+	@echo "$(CYAN)→ Building APK (staging)...$(RESET)"
+	@$(FLUTTER) build apk --flavor staging -t lib/main_stg.dart
 
-test:
-	@echo "$(YELLOW)Running tests...$(RESET)"
-	@$(FLUTTER_BIN) test
+build-apk-prod: ## Build Android APK with split per ABI (Flavor: prod)
+	@echo "$(CYAN)→ Building APK split-per-abi (prod)...$(RESET)"
+	@$(FLUTTER) build apk --flavor prod -t lib/main.dart --split-per-abi --obfuscate --split-debug-info=build/app/outputs/symbols
 
-test-coverage:
-	@echo "$(YELLOW)Running tests with coverage...$(RESET)"
-	@$(FLUTTER_BIN) test --coverage
-	@echo "$(YELLOW)Generating HTML report...$(RESET)"
-	@genhtml coverage/lcov.info -o coverage/html
-	@echo "$(GREEN)Coverage report generated at coverage/html/index.html$(RESET)"
+build-appbundle-dev: ## Build Android AppBundle (Flavor: dev)
+	@echo "$(CYAN)→ Building AppBundle (dev)...$(RESET)"
+	@$(FLUTTER) build appbundle --flavor dev -t lib/main_dev.dart
 
-# -----------------------------------------------------------------------------
-# Run App
-# -----------------------------------------------------------------------------
+build-appbundle-stg: ## Build Android AppBundle (Flavor: staging)
+	@echo "$(CYAN)→ Building AppBundle (staging)...$(RESET)"
+	@$(FLUTTER) build appbundle --flavor staging -t lib/main_stg.dart
 
-run-dev:
-	@echo "$(YELLOW)Running application in DEVELOPMENT mode...$(RESET)"
-	@$(FLUTTER_BIN) run -t $(ENTRY_DEV)
+build-appbundle-prod: ## Build Production AppBundle with obfuscation (Flavor: prod)
+	@echo "$(CYAN)→ Building Production AppBundle (prod)...$(RESET)"
+	@$(FLUTTER) build appbundle --flavor prod -t lib/main.dart --obfuscate --split-debug-info=build/app/outputs/symbols
 
-run-staging:
-	@echo "$(YELLOW)Running application in STAGING mode...$(RESET)"
-	@$(FLUTTER_BIN) run -t $(ENTRY_STAGING)
+## 🍎 iOS Builds (Flavors)
+build-ios-dev: ## Build iOS (Flavor: dev, no codesign)
+	@echo "$(CYAN)→ Building iOS (dev)...$(RESET)"
+	@$(FLUTTER) build ios --flavor dev -t lib/main_dev.dart --no-codesign
 
-run-prod:
-	@echo "$(YELLOW)Running application in PRODUCTION mode...$(RESET)"
-	@$(FLUTTER_BIN) run -t $(ENTRY_PROD)
+build-ios-stg: ## Build iOS (Flavor: staging, no codesign)
+	@echo "$(CYAN)→ Building iOS (staging)...$(RESET)"
+	@$(FLUTTER) build ios --flavor staging -t lib/main_stg.dart --no-codesign
 
-# -----------------------------------------------------------------------------
-# Build Android
-# -----------------------------------------------------------------------------
-
-build-apk-dev:
-	@echo "$(YELLOW)Building DEVELOPMENT APK...$(RESET)"
-	@$(FLUTTER_BIN) build apk -t $(ENTRY_DEV) --release $(BUILD_ARGS)
-
-build-apk-staging:
-	@echo "$(YELLOW)Building STAGING APK...$(RESET)"
-	@$(FLUTTER_BIN) build apk -t $(ENTRY_STAGING) --release $(BUILD_ARGS)
-
-build-apk-prod:
-	@echo "$(YELLOW)Building PRODUCTION APK...$(RESET)"
-	@$(FLUTTER_BIN) build apk -t $(ENTRY_PROD) --release $(BUILD_ARGS)
-
-build-bundle-dev:
-	@echo "$(YELLOW)Building DEVELOPMENT App Bundle (AAB)...$(RESET)"
-	@$(FLUTTER_BIN) build appbundle -t $(ENTRY_DEV) --release $(BUILD_ARGS)
-
-build-bundle-staging:
-	@echo "$(YELLOW)Building STAGING App Bundle (AAB)...$(RESET)"
-	@$(FLUTTER_BIN) build appbundle -t $(ENTRY_STAGING) --release $(BUILD_ARGS)
-
-build-bundle-prod:
-	@echo "$(YELLOW)Building PRODUCTION App Bundle (AAB)...$(RESET)"
-	@$(FLUTTER_BIN) build appbundle -t $(ENTRY_PROD) --release $(BUILD_ARGS)
-
-# -----------------------------------------------------------------------------
-# Build iOS
-# -----------------------------------------------------------------------------
-
-build-ipa-dev:
-	@echo "$(YELLOW)Building DEVELOPMENT IPA...$(RESET)"
-	@$(FLUTTER_BIN) build ipa -t $(ENTRY_DEV) --release $(BUILD_ARGS)
-
-build-ipa-staging:
-	@echo "$(YELLOW)Building STAGING IPA...$(RESET)"
-	@$(FLUTTER_BIN) build ipa -t $(ENTRY_STAGING) --release $(BUILD_ARGS)
-
-build-ipa-prod:
-	@echo "$(YELLOW)Building PRODUCTION IPA...$(RESET)"
-	@$(FLUTTER_BIN) build ipa -t $(ENTRY_PROD) --release $(BUILD_ARGS)
-
-build-ios-dev:
-	@echo "$(YELLOW)Building DEVELOPMENT iOS App Bundle...$(RESET)"
-	@$(FLUTTER_BIN) build ios -t $(ENTRY_DEV) --release $(BUILD_ARGS)
-
-build-ios-staging:
-	@echo "$(YELLOW)Building STAGING iOS App Bundle...$(RESET)"
-	@$(FLUTTER_BIN) build ios -t $(ENTRY_STAGING) --release $(BUILD_ARGS)
-
-build-ios-prod:
-	@echo "$(YELLOW)Building PRODUCTION iOS App Bundle...$(RESET)"
-	@$(FLUTTER_BIN) build ios -t $(ENTRY_PROD) --release $(BUILD_ARGS)
+build-ios-prod: ## Build iOS Release with obfuscation (Flavor: prod)
+	@echo "$(CYAN)→ Building iOS (prod)...$(RESET)"
+	@$(FLUTTER) build ipa --flavor prod -t lib/main.dart --obfuscate --split-debug-info=build/ios/symbols
